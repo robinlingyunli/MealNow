@@ -34,8 +34,7 @@ const MenuItemCard = ({ item }) => {
   };
   
   const handleAddItemToCart = (e) => {
-    //added here
-    e.preventDefault();
+    
     const data = {
       token: localStorage.getItem("jwt"),
       cartItem: {

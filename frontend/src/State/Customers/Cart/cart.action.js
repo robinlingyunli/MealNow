@@ -19,8 +19,6 @@ export const findCart = (token) => {
             Authorization: `Bearer ${token}`,
           },
       });
-      console.log("fetched cart data");
-      console.log(response.data);
       dispatch(findCartSuccess(response.data));
     } catch (error) {
       dispatch(findCartFailure(error));

@@ -27,7 +27,7 @@ const AdminNavbar = ({handleOpenSideBar}) => {
         >
           <IconButton onClick={handleOpenSideBar}><MenuIcon/></IconButton>
           <li className="logo font-semibold text-gray-300 text-2xl">
-            Zosh Food
+            Meal Now
           </li>
         </div>
         {/* <li className="font font-semibold">Home</li> */}
