@@ -53,7 +53,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(athentication);
 				
 			} catch (Exception e) {
-				throw new BadCredentialsException("invalid token...");
+				// token 无效时不抛异常，让请求以未认证状态继续，由 Spring Security 决定是否拒绝
 			}
 		}
 		filterChain.doFilter(request, response);
