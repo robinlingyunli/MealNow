@@ -60,12 +60,11 @@ export const loginUser = (reqData) => async (dispatch) => {
     
     dispatch({ type: LOGIN_SUCCESS, payload: data.jwt });
   } catch (error) {
+    const errorMessage = "Invalid email or password. Please try again.";
+    
     dispatch({
       type: LOGIN_FAILURE,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: errorMessage,
     });
   }
 };

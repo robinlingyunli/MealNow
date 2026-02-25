@@ -127,23 +127,27 @@ public class AuthController {
 
 		System.out.println(username + " ----- " + password);
 
-		Authentication authentication = authenticate(username, password);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		try {
+			Authentication authentication = authenticate(username, password);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		String token = jwtProvider.generateToken(authentication);
-		AuthResponse authResponse = new AuthResponse();
+			String token = jwtProvider.generateToken(authentication);
+			AuthResponse authResponse = new AuthResponse();
 
-		authResponse.setMessage("Login Success");
-		authResponse.setJwt(token);
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+			authResponse.setMessage("Login Success");
+			authResponse.setJwt(token);
+			Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
+			String roleName = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
 
-		String roleName = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
+			authResponse.setRole(USER_ROLE.valueOf(roleName));
 
-
-		authResponse.setRole(USER_ROLE.valueOf(roleName));
-
-		return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.OK);
+			return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.OK);
+		} catch (BadCredentialsException e) {
+			AuthResponse errorResponse = new AuthResponse();
+			errorResponse.setMessage("Invalid email or password");
+			return new ResponseEntity<AuthResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	private Authentication authenticate(String username, String password) {
