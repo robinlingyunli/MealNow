@@ -13,8 +13,8 @@ export const topMeels=[
     }
     ,
     {
-        image:"https://cdn.pixabay.com/photo/2015/10/01/14/26/fried-rice-967081_640.jpg",
-        title:"Fried Rice"
+        image:"https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=600",
+        title:"Italian"
     }
     ,
     {

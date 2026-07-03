@@ -1,6 +1,9 @@
-export const PopularCuisines = ({ image, title }) => {
+export const PopularCuisines = ({ image, title, onClick }) => {
   return (
-    <div className="px-3 flex flex-col justify-center items-center">
+    <div
+      className="px-3 flex flex-col justify-center items-center cursor-pointer hover:opacity-75"
+      onClick={() => onClick(title)}
+    >
       <img
         className="w-[2rem] h-[2rem] lg:w-[4rem] lg:h-[4rem] rounded-full object-cover object-center"
         src={image}

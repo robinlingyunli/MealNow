@@ -18,29 +18,13 @@ import { getMenuItemsByRestaurantId } from "../../../State/Customers/Menu/menu.a
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TodayIcon from '@mui/icons-material/Today';
 
-const categories = [
-  "Thali",
-  "Starters",
-  "Indian Main Course",
-  "Rice and Biryani",
-  "Breads",
-  "Accompaniments",
-  "Dessert",
-];
-
-const foodTypes = [
-  {label:"All",value:"all"},
-  { label: "Vegetarian Only", value: "vegetarian" },
-  { label: "Non-Vegetarian Only", value: "non_vegetarian" },
-  {label:"Seasonal",value:"seasonal"},
-  
-];
 const Restaurant = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { id } = useParams();
   const { restaurant, menu } = useSelector((store) => store);
   const navigate = useNavigate();
+  const [activeCategories, setActiveCategories] = useState([]);
 
   const decodedQueryString = decodeURIComponent(location.search);
   const searchParams = new URLSearchParams(decodedQueryString);
@@ -49,24 +33,31 @@ const Restaurant = () => {
   const jwt=localStorage.getItem("jwt")
 
   useEffect(() => {
-    dispatch(
-      getRestaurantById({
-        jwt: localStorage.getItem("jwt"),
-        restaurantId: id,
-      })
-    );
+    dispatch(getRestaurantById({ jwt: localStorage.getItem("jwt"), restaurantId: id }));
+    dispatch(getRestaurantsCategory({ restaurantId: id, jwt }));
+  }, [id]);
+
+  useEffect(() => {
     dispatch(
       getMenuItemsByRestaurantId({
         jwt: localStorage.getItem("jwt"),
         restaurantId: id,
-        seasonal: foodType==="seasonal",
-        vegetarian: foodType==="vegetarian",
-        nonveg: foodType==="non_vegetarian",
-        foodCategory: foodCategory || ""
+        seasonal: false,
+        vegetarian: false,
+        nonveg: false,
+        foodCategory: foodCategory || "",
       })
     );
-    dispatch(getRestaurantsCategory({restaurantId:id,jwt}))
-  }, [id,foodType,foodCategory]);
+  }, [id, foodCategory]);
+
+  useEffect(() => {
+    if (!foodCategory && menu.menuItems.length > 0) {
+      const cats = [...new Set(
+        menu.menuItems.map((item) => item.foodCategory?.name).filter(Boolean)
+      )];
+      setActiveCategories(cats);
+    }
+  }, [menu.menuItems]);
 
   const handleFilter = (e, value) => {
     const searchParams = new URLSearchParams(location.search);
@@ -106,49 +97,28 @@ const Restaurant = () => {
       <section className="pt-[2rem] lg:flex relative ">
         <div className="space-y-10 lg:w-[20%] filter">
           <div className="box space-y-5 lg:sticky top-28">
-            
             <div className="">
               <Typography sx={{ paddingBottom: "1rem" }} variant="h5">
-                Food Type
-              </Typography>
-              <FormControl className="py-10 space-y-5" component="fieldset">
-                <RadioGroup
-                  name="food_type"
-                  value={foodType || "all"}
-                  onChange={handleFilter}
-                >
-                  {foodTypes?.map((item, index) => (
-                    <FormControlLabel
-                      key={index}
-                      value={item.value}
-                      control={<Radio />}
-                      label={item.label}
-                      sx={{ color: "gray" }}
-                    />
-                  ))}
-                </RadioGroup>
-                <Divider/>
-                <Typography sx={{ paddingBottom: "1rem" }} variant="h5">
                 Food Category
               </Typography>
+              <FormControl component="fieldset">
                 <RadioGroup
                   name="food_category"
                   value={foodCategory || "all"}
                   onChange={handleFilter}
                 >
-                   <FormControlLabel
-                      
-                      value={"all"}
-                      control={<Radio />}
-                      label={"All"}
-                      sx={{ color: "gray" }}
-                    />
-                  {restaurant?.categories.map((item, index) => (
+                  <FormControlLabel
+                    value="all"
+                    control={<Radio />}
+                    label="All"
+                    sx={{ color: "gray" }}
+                  />
+                  {activeCategories.map((name, index) => (
                     <FormControlLabel
                       key={index}
-                      value={item.name}
+                      value={name}
                       control={<Radio />}
-                      label={item.name}
+                      label={name}
                       sx={{ color: "gray" }}
                     />
                   ))}

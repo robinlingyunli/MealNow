@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./HomePage.css";
 import Navbar from "../../components/Navbar/Navbar";
 import MultipleItemsCarousel from "../../components/MultiItemCarousel/MultiItemCarousel";
@@ -6,18 +6,28 @@ import { restaurents } from "../../../Data/restaurents";
 import RestaurantCard from "../../components/RestarentCard/RestaurantCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRestaurantsAction } from "../../../State/Customers/Restaurant/restaurant.action";
-// import { getAllRestaurantsAction } from "../../../State/Restaurant/Action";
-// import RestarantCard from "../../components/RestarentCard/Restaurant";
 
 const HomePage = () => {
   const { auth, restaurant } = useSelector((store) => store);
   const dispatch = useDispatch();
+  const [selectedCuisine, setSelectedCuisine] = useState(null);
 
   useEffect(() => {
     if (auth.user) {
       dispatch(getAllRestaurantsAction(localStorage.getItem("jwt")));
     }
   }, [auth.user]);
+
+  const handleCuisineClick = (title) => {
+    setSelectedCuisine((prev) => (prev === title ? null : title));
+  };
+
+  const filteredRestaurants = selectedCuisine
+    ? restaurant.restaurants.filter(
+        (r) => r.cuisineType?.toLowerCase() === selectedCuisine.toLowerCase()
+      )
+    : restaurant.restaurants;
+
   return (
     <div className="">
       <section className="-z-50 banner relative flex flex-col justify-center items-center">
@@ -37,16 +47,24 @@ const HomePage = () => {
           <p className="text-2xl font-semibold text-gray-400 py-3 pb-10">
             Top Meels
           </p>
-          <MultipleItemsCarousel />
+          <MultipleItemsCarousel onCuisineClick={handleCuisineClick} />
         </div>
       </section>
       <section className="px-5 lg:px-20">
         <div className="">
           <h1 className="text-2xl font-semibold text-gray-400 py-3 ">
-            Order From Our Handpicked Favorites
+            {selectedCuisine ? `${selectedCuisine} Restaurants` : "Order From Our Handpicked Favorites"}
           </h1>
+          {selectedCuisine && (
+            <button
+              onClick={() => setSelectedCuisine(null)}
+              className="mb-4 text-sm text-gray-400 underline"
+            >
+              Clear filter
+            </button>
+          )}
           <div className="flex flex-wrap items-center justify-around ">
-            {restaurant.restaurants.map((item, i) => (
+            {filteredRestaurants.map((item, i) => (
               <RestaurantCard data={item} index={i} />
             ))}
           </div>

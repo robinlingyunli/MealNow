@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -maxdepth 2 -name Dockerfile* -o -name docker-compose* -o -name .env*)"
+    ]
+  }
+}

@@ -14,11 +14,8 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useParams } from "react-router-dom";
 import {
   Alert,
-  Box,
-  Chip,
   CircularProgress,
   IconButton,
-  OutlinedInput,
   Snackbar,
 } from "@mui/material";
 import { uploadToCloudinary } from "../utils/UploadToCloudnary";
@@ -64,13 +61,12 @@ const initialValues = {
   vegetarian: true,
   seasonal: false,
   quantity: 0,
-  ingredients: [],
 };
 
 const AddMenuForm = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { restaurant, ingredients, auth ,menu} = useSelector((store) => store);
+  const { restaurant, auth, menu } = useSelector((store) => store);
   const [uploadImage, setUploadingImage] = useState("");
   const jwt = localStorage.getItem("jwt");
 
@@ -219,46 +215,6 @@ const AddMenuForm = () => {
                   >
                     {restaurant.categories.map((item) => (
                       <MenuItem value={item}>{item.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id="ingredient-multiple-chip-label">
-                    Ingredients
-                  </InputLabel>
-                  <Select
-                    labelId="ingredient-multiple-chip-label"
-                    id="ingredient-multiple-chip"
-                    multiple
-                    name="ingredients"
-                    value={formik.values.ingredients}
-                    onChange={formik.handleChange}
-                    input={
-                      <OutlinedInput
-                        id="select-multiple-chip"
-                        label="Ingrededients"
-                      />
-                    }
-                    renderValue={(selected) => (
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value.id} label={value.name} />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MenuProps}
-                  >
-                    {ingredients.ingredients?.map((item) => (
-                      <MenuItem
-                        key={item.id}
-                        value={item}
-                        // style={getStyles(name, personName, theme)}
-                      >
-                        {item.name}
-                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
