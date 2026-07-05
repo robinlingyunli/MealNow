@@ -88,7 +88,7 @@ import {
                       {item.category.name}
                     </TableCell>
                     <TableCell sx={{ textAlign: "center" }}>
-                      ₹{item.price}
+                      ${item.price}
                     </TableCell>
                     <TableCell sx={{ textAlign: "center" }}>
                       {item.quantity || 10}

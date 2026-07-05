@@ -15,7 +15,7 @@ import {
   getIngredientCategory,
   getIngredientsOfRestaurant,
 } from "../State/Admin/Ingredients/Action";
-import { getRestaurantsCategory } from "../State/Customers/Restaurant/restaurant.action";
+import { getRestaurantByUserId, getRestaurantsCategory } from "../State/Customers/Restaurant/restaurant.action";
 import Details from "./Details/Details";
 import AdminNavbar from "./AdminNavbar";
 import { getUsersOrders } from "../State/Customers/Orders/Action";
@@ -28,6 +28,10 @@ const Admin = () => {
   const handleCloseSideBar = () => setOpenSideBar(false);
   const { auth, restaurant, ingredients } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
+  useEffect(() => {
+    dispatch(getRestaurantByUserId(jwt));
+  }, []);
+
   useEffect(() => {
     if (restaurant.usersRestaurant) {
       dispatch(

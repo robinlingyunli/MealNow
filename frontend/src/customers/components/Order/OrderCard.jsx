@@ -12,7 +12,7 @@ const OrderCard = ({order,status}) => {
         />
         <div>
           <p>{order.food.name}</p>
-          <p className="text-gray-400">₹{order.food.price}</p>
+          <p className="text-gray-400">${order.food.price}</p>
         </div>
       </div>
       <div>

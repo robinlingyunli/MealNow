@@ -56,23 +56,19 @@ const Events = () => {
   };
 
   const handleDateChange = (date, dateType) => {
-    const formattedDate = dayjs(date).format("MMMM DD, YYYY hh:mm A");
-    setFormValues({ ...formValues, [dateType]: formattedDate });
+    setFormValues({ ...formValues, [dateType]: date });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    dispatch(
-      createEventAction({
-        data: formValues,
-        restaurantId: restaurant.usersRestaurant?.id,
-        jwt
-      })
-    );
-    console.log("Image URL:", formValues,restaurant.usersRetaurant?.id);
-    // setFormValues(initialValues);
-    // handleCloseModal();
+    const data = {
+      ...formValues,
+      startedAt: formValues.startedAt ? dayjs(formValues.startedAt).format("MMMM DD, YYYY hh:mm A") : null,
+      endsAt: formValues.endsAt ? dayjs(formValues.endsAt).format("MMMM DD, YYYY hh:mm A") : null,
+    };
+    dispatch(createEventAction({ data, restaurantId: restaurant.usersRestaurant?.id, jwt }));
+    setFormValues(initialValues);
+    handleCloseModal();
   };
 
   useEffect(() => {

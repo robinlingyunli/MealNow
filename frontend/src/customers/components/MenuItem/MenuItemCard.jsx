@@ -28,7 +28,7 @@ const MenuItemCard = ({ item }) => {
         />
         <div className="space-y-1 lg:space-y-3 lg:max-w-2xl">
           <p className="font-semibold text-xl">{item.name}</p>
-          <p>₹{item.price}</p>
+          <p>${item.price}</p>
           <p className="text-gray-400">{item.description}</p>
         </div>
       </div>

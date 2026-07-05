@@ -5,18 +5,14 @@ import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HomeIcon from "@mui/icons-material/Home";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../State/Authentication/Action";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import EventIcon from "@mui/icons-material/Event";
 
 const menu = [
   { title: "Orders", icon: <ShoppingBagIcon /> },
   { title: "Favorites", icon: <FavoriteIcon /> },
   { title: "Address", icon: <HomeIcon /> },
-  { title: "Payments", icon: <AccountBalanceWalletIcon /> },
-  { title: "Notification", icon: <NotificationsIcon /> },
   { title: "Events", icon: <EventIcon /> },
   { title: "Logout", icon: <LogoutIcon /> },
 ];

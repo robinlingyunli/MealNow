@@ -141,6 +141,39 @@ export const resetPassword = (reqData) => async (dispatch) => {
   }
 };
 
+export const saveAddress = ({ jwt, address }) => async (dispatch) => {
+  try {
+    await api.post("/api/users/addresses", address, {
+      headers: { Authorization: `Bearer ${jwt}` },
+    });
+    dispatch(getUser(jwt));
+  } catch (error) {
+    console.log("save address error", error);
+  }
+};
+
+export const updateAddress = ({ jwt, addressId, address }) => async (dispatch) => {
+  try {
+    await api.put(`/api/users/addresses/${addressId}`, address, {
+      headers: { Authorization: `Bearer ${jwt}` },
+    });
+    dispatch(getUser(jwt));
+  } catch (error) {
+    console.log("update address error", error);
+  }
+};
+
+export const deleteAddress = ({ jwt, addressId }) => async (dispatch) => {
+  try {
+    await api.delete(`/api/users/addresses/${addressId}`, {
+      headers: { Authorization: `Bearer ${jwt}` },
+    });
+    dispatch(getUser(jwt));
+  } catch (error) {
+    console.log("delete address error", error);
+  }
+};
+
 export const logout = () => {
   return async (dispatch) => {
     dispatch({ type: LOGOUT });

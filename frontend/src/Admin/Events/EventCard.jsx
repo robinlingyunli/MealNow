@@ -14,7 +14,7 @@ import { deleteEventAction } from "../../State/Customers/Restaurant/restaurant.a
 const EventCard = ({ item,isCustomer }) => {
   const dispatch=useDispatch();
   const handleDeleteEvent = () => {
-    dispatch(deleteEventAction(item.id))
+    dispatch(deleteEventAction({ eventId: item.id, jwt: localStorage.getItem("jwt") }));
   };
   return (
     <div>

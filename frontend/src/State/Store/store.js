@@ -8,6 +8,7 @@ import { orderReducer } from "../Customers/Orders/order.reducer";
 import restaurantsOrderReducer from "../Admin/Order/restaurants.order.reducer";
 import superAdminReducer from "../SuperAdmin/superAdmin.reducer";
 import { ingredientReducer } from "../Admin/Ingredients/Reducer";
+import { reviewReducer } from "../Customers/Review/review.reducer";
 
 
 
@@ -18,6 +19,7 @@ const rootReducer=combineReducers({
     menu:menuItemReducer,
     cart:cartReducer,
     order:orderReducer,
+    review:reviewReducer,
 
     // admin
     restaurantsOrder:restaurantsOrderReducer,

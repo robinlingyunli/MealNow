@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Backdrop, CircularProgress, Divider, Typography } from "@mui/material";
+import { Backdrop, CircularProgress, Divider, InputAdornment, TextField, Typography } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import MenuItemCard from "../../components/MenuItem/MenuItemCard";
+import RatingsSection from "../../components/Review/RatingsSection";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurantById, getRestaurantsCategory } from "../../../State/Customers/Restaurant/restaurant.action";
 import { getMenuItemsByRestaurantId } from "../../../State/Customers/Menu/menu.action";
@@ -13,6 +15,9 @@ const Restaurant = () => {
   const { id } = useParams();
   const { restaurant, menu } = useSelector((store) => store);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [activeSide, setActiveSide] = useState("menu");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const reviewsRef = useRef(null);
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
@@ -41,24 +46,60 @@ const Restaurant = () => {
 
   const categories = Object.keys(groupedItems);
 
-  const displayedItems = activeCategory === "all"
-    ? menu.menuItems
-    : groupedItems[activeCategory] || [];
+  const filterBySearch = (items) => {
+    if (!searchKeyword.trim()) return items;
+    const kw = searchKeyword.toLowerCase();
+    return items.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(kw) ||
+        item.description?.toLowerCase().includes(kw) ||
+        item.foodCategory?.name?.toLowerCase().includes(kw)
+    );
+  };
+
+  const displayedItems = filterBySearch(
+    activeCategory === "all" ? menu.menuItems : groupedItems[activeCategory] || []
+  );
+
+  const filteredGrouped = searchKeyword.trim()
+    ? Object.fromEntries(
+        Object.entries(groupedItems).map(([cat, items]) => [cat, filterBySearch(items)]).filter(([, items]) => items.length > 0)
+      )
+    : groupedItems;
 
   return (
     <>
       <div className="px-5 lg:px-20">
         <section>
-          <div className="pt-3 pb-5">
-            <h1 className="text-4xl font-semibold py-8">{restaurant.restaurant?.name}</h1>
-            <p className="text-gray-500 my-4">{restaurant.restaurant?.description}</p>
-            <div className="space-y-3 mt-3">
-              <p className="text-gray-500 flex items-center gap-3">
-                <LocationOnIcon /> <span>{restaurant.restaurant?.address.streetAddress}</span>
-              </p>
-              <p className="flex items-center gap-3 text-gray-500">
-                <TodayIcon /> <span className="text-orange-300">{restaurant.restaurant?.openingHours} (Today)</span>
-              </p>
+          <div className="pt-3 pb-5 lg:flex lg:items-center lg:justify-between">
+            <div>
+              <h1 className="text-4xl font-semibold py-8">{restaurant.restaurant?.name}</h1>
+              <p className="text-gray-500 my-4">{restaurant.restaurant?.description}</p>
+              <div className="space-y-3 mt-3">
+                <p className="text-gray-500 flex items-center gap-3">
+                  <LocationOnIcon /> <span>{restaurant.restaurant?.address.streetAddress}</span>
+                </p>
+                <p className="flex items-center gap-3 text-gray-500">
+                  <TodayIcon /> <span className="text-orange-300">{restaurant.restaurant?.openingHours} (Today)</span>
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 lg:mt-0 lg:w-[35%]">
+              <TextField
+                fullWidth
+                variant="outlined"
+                placeholder={`Search in ${restaurant.restaurant?.name || "restaurant"}...`}
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: "gray" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+              />
             </div>
           </div>
         </section>
@@ -71,50 +112,66 @@ const Restaurant = () => {
                 Menu
               </Typography>
               <p
-                onClick={() => setActiveCategory("all")}
-                className={`cursor-pointer py-1 text-sm ${activeCategory === "all" ? "text-white font-semibold" : "text-gray-400"} hover:text-white transition-colors`}
+                onClick={() => { setActiveCategory("all"); setActiveSide("menu"); }}
+                className={`cursor-pointer py-1 text-sm ${activeSide === "menu" && activeCategory === "all" ? "text-white font-semibold" : "text-gray-400"} hover:text-white transition-colors`}
               >
                 All
               </p>
               {categories.map((name) => (
                 <p
                   key={name}
-                  onClick={() => setActiveCategory(name)}
-                  className={`cursor-pointer py-1 text-sm ${activeCategory === name ? "text-white font-semibold" : "text-gray-400"} hover:text-white transition-colors`}
+                  onClick={() => { setActiveCategory(name); setActiveSide("menu"); }}
+                  className={`cursor-pointer py-1 text-sm ${activeSide === "menu" && activeCategory === name ? "text-white font-semibold" : "text-gray-400"} hover:text-white transition-colors`}
                 >
                   {name}
                 </p>
               ))}
+
+              <Divider sx={{ my: 1 }} />
+
+              <Typography
+                variant="h5"
+                onClick={() => setActiveSide("reviews")}
+                sx={{ fontWeight: 600, cursor: "pointer", color: "white" }}
+              >
+                Reviews
+              </Typography>
             </div>
           </div>
 
           <div className="lg:w-[80%] lg:pl-10 space-y-10">
-            {activeCategory === "all"
-              ? categories.map((categoryName) => (
-                  <div key={categoryName}>
+            {activeSide === "menu" && (
+              activeCategory === "all"
+                ? Object.entries(filteredGrouped).map(([categoryName, items]) => (
+                    <div key={categoryName}>
+                      <Typography variant="h5" sx={{ fontWeight: 600, paddingBottom: "1rem" }}>
+                        {categoryName}
+                      </Typography>
+                      <div className="space-y-3">
+                        {items.map((item) => (
+                          <MenuItemCard key={item.id} item={item} />
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                : (
+                  <div>
                     <Typography variant="h5" sx={{ fontWeight: 600, paddingBottom: "1rem" }}>
-                      {categoryName}
+                      {activeCategory}
                     </Typography>
                     <div className="space-y-3">
-                      {groupedItems[categoryName].map((item) => (
+                      {displayedItems.map((item) => (
                         <MenuItemCard key={item.id} item={item} />
                       ))}
                     </div>
                   </div>
-                ))
-              : (
-                <div>
-                  <Typography variant="h5" sx={{ fontWeight: 600, paddingBottom: "1rem" }}>
-                    {activeCategory}
-                  </Typography>
-                  <div className="space-y-3">
-                    {displayedItems.map((item) => (
-                      <MenuItemCard key={item.id} item={item} />
-                    ))}
-                  </div>
-                </div>
-              )
-            }
+                )
+            )}
+            {activeSide === "reviews" && (
+              <div ref={reviewsRef}>
+                <RatingsSection restaurantId={id} />
+              </div>
+            )}
           </div>
         </section>
       </div>
