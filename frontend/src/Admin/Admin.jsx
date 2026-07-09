@@ -10,6 +10,8 @@ import CreateRestaurantForm from "./AddRestaurants/CreateRestaurantForm";
 import IngredientTable from "./Events/Events";
 import Category from "./Category/Category";
 import Ingredients from "./Ingredients/Ingredients";
+import PromotionList from "./Promotion/PromotionList";
+import CreateEditPromotion from "./Promotion/CreateEditPromotion";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getIngredientCategory,
@@ -17,14 +19,13 @@ import {
 } from "../State/Admin/Ingredients/Action";
 import { getRestaurantByUserId, getRestaurantsCategory } from "../State/Customers/Restaurant/restaurant.action";
 import Details from "./Details/Details";
-import AdminNavbar from "./AdminNavbar";
+import Navbar from "../customers/components/Navbar/Navbar";
 import { getUsersOrders } from "../State/Customers/Orders/Action";
 import { fetchRestaurantsOrder } from "../State/Admin/Order/restaurants.order.action";
 
 const Admin = () => {
   const dispatch = useDispatch();
   const [openSideBar, setOpenSideBar] = useState(false);
-  const handleOpenSideBar = () => setOpenSideBar(true);
   const handleCloseSideBar = () => setOpenSideBar(false);
   const { auth, restaurant, ingredients } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
@@ -57,12 +58,11 @@ const Admin = () => {
   }, [restaurant.usersRestaurant]);
   return (
     <div>
-      <AdminNavbar handleOpenSideBar={handleOpenSideBar} />
+      <Navbar />
       <div className="lg:flex justify-between">
-        <div className="">
+        <div>
           <AdminSidebar handleClose={handleCloseSideBar} open={openSideBar} />
         </div>
-
         <div className="lg:w-[80vw]">
           <Routes>
             <Route path="/" element={<RestaurantDashboard />} />
@@ -74,6 +74,9 @@ const Admin = () => {
             <Route path="/ingredients" element={<Ingredients />} />
             <Route path="/category" element={<Category />} />
             <Route path="/details" element={<Details />} />
+            <Route path="/promotion" element={<PromotionList />} />
+            <Route path="/promotion/create" element={<CreateEditPromotion />} />
+            <Route path="/promotion/edit" element={<CreateEditPromotion />} />
           </Routes>
         </div>
       </div>

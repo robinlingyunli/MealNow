@@ -55,7 +55,10 @@ public class CartServiceImplementation implements CartSerive {
 		newCartItem.setQuantity(req.getQuantity());
 		newCartItem.setCart(cart);
 		newCartItem.setIngredients(req.getIngredients());
-		newCartItem.setTotalPrice(req.getQuantity()*menuItem.get().getPrice());
+		long effectivePrice = menuItem.get().getDiscountPercent() > 0
+				? (long)(menuItem.get().getPrice() * (100 - menuItem.get().getDiscountPercent()) / 100.0)
+				: menuItem.get().getPrice();
+		newCartItem.setTotalPrice(req.getQuantity() * effectivePrice);
 		
 		CartItem savedItem=cartItemRepository.save(newCartItem);
 		cart.getItems().add(savedItem);
@@ -72,7 +75,11 @@ public class CartServiceImplementation implements CartSerive {
 			throw new CartItemException("cart item not exist with id "+cartItemId);
 		}
 		cartItem.get().setQuantity(quantity);
-		cartItem.get().setTotalPrice((cartItem.get().getFood().getPrice()*quantity));
+		Food food = cartItem.get().getFood();
+		long ep = food.getDiscountPercent() > 0
+				? (long)(food.getPrice() * (100 - food.getDiscountPercent()) / 100.0)
+				: food.getPrice();
+		cartItem.get().setTotalPrice(ep * quantity);
 		return cartItemRepository.save(cartItem.get());
 	}
 

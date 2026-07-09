@@ -28,7 +28,19 @@ const MenuItemCard = ({ item }) => {
         />
         <div className="space-y-1 lg:space-y-3 lg:max-w-2xl">
           <p className="font-semibold text-xl">{item.name}</p>
-          <p>${item.price}</p>
+          {item.discountPercent > 0 ? (
+            <div className="flex items-center gap-2">
+              <p className="text-red-400 font-semibold">
+                ${((item.price * (100 - item.discountPercent)) / 100).toFixed(2)}
+              </p>
+              <p className="text-gray-500 line-through text-sm">${item.price}</p>
+              <span className="text-xs bg-red-500 text-white px-1 rounded">
+                -{item.discountPercent}%
+              </span>
+            </div>
+          ) : (
+            <p>${item.price}</p>
+          )}
           <p className="text-gray-400">{item.description}</p>
         </div>
       </div>

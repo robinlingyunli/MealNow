@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HomeIcon from "@mui/icons-material/Home";
+import EventIcon from "@mui/icons-material/Event";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../State/Authentication/Action";
-import EventIcon from "@mui/icons-material/Event";
 
 const menu = [
   { title: "Orders", icon: <ShoppingBagIcon /> },
@@ -17,49 +17,52 @@ const menu = [
   { title: "Logout", icon: <LogoutIcon /> },
 ];
 
-const ProfileNavigation = ({ handleClose, open }) => {
+const MenuItems = ({ handleNavigate }) => (
+  <div className="flex flex-col text-xl py-4">
+    {menu.map((item, i) => (
+      <React.Fragment key={item.title}>
+        <div
+          onClick={() => handleNavigate(item)}
+          className="px-5 py-8 flex items-center space-x-5 cursor-pointer hover:bg-gray-800"
+        >
+          {item.icon}
+          <span>{item.title}</span>
+        </div>
+        {i !== menu.length - 1 && <Divider />}
+      </React.Fragment>
+    ))}
+  </div>
+);
+
+const ProfileNavigation = ({ handleClose = () => {}, open }) => {
   const isSmallScreen = useMediaQuery("(max-width:1080px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleNavigate = (item) => {
+    if (item.title === "Logout") {
+      dispatch(logout());
+      navigate("/");
+    } else {
+      navigate(`/my-profile/${item.title.toLowerCase()}`);
+    }
+    handleClose();
   };
 
-  const handleNavigate = (item) => {
-    navigate(`/my-profile/${item.title.toLowerCase()}`);
-    if (item.title === "Logout") {
-      handleLogout();
-      navigate("/");
-    }
-  };
+  if (!isSmallScreen) {
+    return (
+      <div className="w-[20vw] min-h-screen border-r border-gray-800 shrink-0">
+        <MenuItems handleNavigate={handleNavigate} />
+      </div>
+    );
+  }
 
   return (
-    <React.Fragment>
-      <Drawer
-        sx={{ zIndex: 1 }}
-        anchor={"left"}
-        open={open}
-        onClose={handleClose}
-        variant={isSmallScreen ? "temporary" : "permanent"}
-        // variant="persistent"
-      >
-        <div className="w-[50vw] lg:w-[20vw] h-[100vh] flex flex-col justify-center text-xl space-y-8 pt-16">
-          {menu.map((item, i) => (
-            <>
-              <div
-                onClick={() => handleNavigate(item)}
-                className="px-5 flex items-center space-x-5 cursor-pointer"
-              >
-                {item.icon}
-                <span>{item.title}</span>
-              </div>
-              {i !== menu.length - 1 && <Divider />}
-            </>
-          ))}
-        </div>
-      </Drawer>
-    </React.Fragment>
+    <Drawer anchor="left" open={open} onClose={handleClose}>
+      <div className="w-[70vw] h-full">
+        <MenuItems handleNavigate={handleNavigate} />
+      </div>
+    </Drawer>
   );
 };
 

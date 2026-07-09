@@ -119,6 +119,7 @@ public class RestaurantServiceImplementation implements RestaurantService {
 		dto.setImages(restaurant.getImages());
 		dto.setId(restaurant.getId());
 		dto.setDescription(restaurant.getDescription());
+		dto.setOpen(restaurant.isOpen());
 
 		boolean isFavorited = false;
 		List<RestaurantDto> favorites = user.getFavorites();

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.Exception.UserException;
 import com.example.config.JwtProvider;
-//import com.example.model.PasswordResetToken;
+import com.example.model.Address;
 import com.example.model.User;
-//import com.example.repository.PasswordResetTokenRepository;
+import com.example.repository.AddressRepository;
 import com.example.repository.UserRepository;
 
 @Service
@@ -26,23 +26,19 @@ public class UserServiceImplementation implements UserService {
 	private UserRepository userRepository;
 	private JwtProvider jwtProvider;
 	private PasswordEncoder passwordEncoder;
-//	private PasswordResetTokenRepository passwordResetTokenRepository;
-//	private JavaMailSender javaMailSender;
-	
+	private AddressRepository addressRepository;
+
 	public UserServiceImplementation(
 			UserRepository userRepository,
 			JwtProvider jwtProvider,
-			PasswordEncoder passwordEncoder
-//			PasswordResetTokenRepository passwordResetTokenRepository,
-//			JavaMailSender javaMailSender
+			PasswordEncoder passwordEncoder,
+			AddressRepository addressRepository
 	)
 	{
-		this.userRepository=userRepository;
-		this.jwtProvider=jwtProvider;
-		this.passwordEncoder=passwordEncoder;
-//		this.passwordResetTokenRepository=passwordResetTokenRepository;
-//		this.javaMailSender=javaMailSender;
-		
+		this.userRepository = userRepository;
+		this.jwtProvider = jwtProvider;
+		this.passwordEncoder = passwordEncoder;
+		this.addressRepository = addressRepository;
 	}
 
 	@Override
@@ -111,6 +107,32 @@ public class UserServiceImplementation implements UserService {
         return cal.getTime();
     }
 	
+	@Override
+	public User saveAddress(User user, Address address) {
+		Address saved = addressRepository.save(address);
+		user.getAddresses().add(saved);
+		return userRepository.save(user);
+	}
+
+	@Override
+	public User updateAddress(User user, Long addressId, Address updated) {
+		Address address = addressRepository.findById(addressId)
+				.orElseThrow(() -> new RuntimeException("Address not found"));
+		address.setStreetAddress(updated.getStreetAddress());
+		address.setCity(updated.getCity());
+		address.setState(updated.getState());
+		address.setPostalCode(updated.getPostalCode());
+		address.setCountry(updated.getCountry());
+		addressRepository.save(address);
+		return userRepository.findById(user.getId()).get();
+	}
+
+	@Override
+	public User deleteAddress(User user, Long addressId) {
+		user.getAddresses().removeIf(a -> a.getId().equals(addressId));
+		return userRepository.save(user);
+	}
+
 	@Override
 	public User findUserByEmail(String username) throws UserException {
 		

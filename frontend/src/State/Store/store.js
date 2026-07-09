@@ -9,6 +9,7 @@ import restaurantsOrderReducer from "../Admin/Order/restaurants.order.reducer";
 import superAdminReducer from "../SuperAdmin/superAdmin.reducer";
 import { ingredientReducer } from "../Admin/Ingredients/Reducer";
 import { reviewReducer } from "../Customers/Review/review.reducer";
+import { promotionReducer } from "../Admin/Promotion/promotion.reducer";
 
 
 
@@ -24,6 +25,7 @@ const rootReducer=combineReducers({
     // admin
     restaurantsOrder:restaurantsOrderReducer,
     ingredients:ingredientReducer,
+    promotion:promotionReducer,
 
     // super admin
     superAdmin:superAdminReducer
