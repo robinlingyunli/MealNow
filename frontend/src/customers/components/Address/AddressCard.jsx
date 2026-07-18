@@ -18,7 +18,7 @@ const AddressCard = ({ item, selected, onSelect, selectable, onEdit, onRemove })
         )}
         <HomeIcon fontSize="small" sx={{ color: "gray" }} />
         <div className="space-y-1 text-gray-500">
-          <h1 className="font-semibold text-white text-sm">Home</h1>
+          <h1 className="font-semibold text-gray-900 text-sm">Home</h1>
           <p className="text-sm">
             {item.streetAddress}, {item.city || item.postalCode}, {item.state}
           </p>

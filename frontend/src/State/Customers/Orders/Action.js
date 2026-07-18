@@ -1,6 +1,6 @@
 import { api } from "../../../config/api";
 import { createOrderFailure, createOrderRequest, createOrderSuccess, getUsersOrdersFailure, getUsersOrdersRequest, getUsersOrdersSuccess } from "./ActionCreators";
-import { GET_USERS_NOTIFICATION_FAILURE, GET_USERS_NOTIFICATION_SUCCESS } from "./ActionTypes";
+import { DELETE_ORDER_FAILURE, DELETE_ORDER_SUCCESS, GET_USERS_NOTIFICATION_FAILURE, GET_USERS_NOTIFICATION_SUCCESS } from "./ActionTypes";
 
 
 export const createOrder = (reqData) => {
@@ -42,6 +42,17 @@ export const getUsersOrders = (jwt) => {
   };
 };
 
+
+export const deleteOrderAction = (orderId, jwt) => async (dispatch) => {
+  try {
+    await api.delete(`/api/order/${orderId}`, {
+      headers: { Authorization: `Bearer ${jwt}` },
+    });
+    dispatch({ type: DELETE_ORDER_SUCCESS, payload: orderId });
+  } catch (error) {
+    dispatch({ type: DELETE_ORDER_FAILURE, payload: error.message });
+  }
+};
 
 export const getUsersNotificationAction = () => {
   return async (dispatch) => {

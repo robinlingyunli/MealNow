@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,10 +27,14 @@ public class AppConfig {
         http
             .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // 注册 & 登录不需要 JWT
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/restaurants", "/api/restaurants/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/food/restaurant/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/category/restaurant/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/promotions").permitAll()
                 .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
-                .requestMatchers("/api/**").authenticated()  // 其他 /api/** 需要 JWT
-                .anyRequest().permitAll() // 其他任何请求放行
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
             )
             .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
             .csrf(csrf -> csrf.disable())

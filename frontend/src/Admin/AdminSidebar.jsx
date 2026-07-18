@@ -12,7 +12,6 @@ import { logout } from "../State/Authentication/Action";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import CategoryIcon from "@mui/icons-material/Category";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
 
 const menu = [
   { title: "Dashboard", icon: <Dashboard />, path: "/" },
@@ -25,15 +24,15 @@ const menu = [
 ];
 
 const MenuItems = ({ handleNavigate }) => (
-  <div className="flex flex-col h-full text-xl py-4">
+  <div className="flex flex-col h-full text-base py-4">
     {menu.map((item, i) => (
       <React.Fragment key={item.title}>
         <div
           onClick={() => handleNavigate(item)}
-          className="px-5 py-8 flex items-center space-x-5 cursor-pointer hover:bg-gray-800"
+          className="px-5 py-6 flex items-center space-x-4 cursor-pointer hover:bg-gray-100 text-gray-700 hover:text-gray-900 transition-colors"
         >
-          {item.icon}
-          <span>{item.title}</span>
+          <span className="text-gray-500">{item.icon}</span>
+          <span className="font-medium">{item.title}</span>
         </div>
         {i !== menu.length - 1 && <Divider />}
       </React.Fragment>
@@ -56,19 +55,17 @@ export default function AdminSidebar({ handleClose, open }) {
     handleClose();
   };
 
-  // 大屏幕：普通 div，正常文档流，不遮挡 navbar
   if (!isSmallScreen) {
     return (
-      <div className="w-[20vw] min-h-screen border-r border-gray-800 shrink-0">
+      <div className="w-[20vw] min-h-screen border-r border-gray-200 bg-white shrink-0">
         <MenuItems handleNavigate={handleNavigate} />
       </div>
     );
   }
 
-  // 手机：MUI Drawer 临时弹出
   return (
     <Drawer anchor="left" open={open} onClose={handleClose}>
-      <div className="w-[70vw] h-full">
+      <div className="w-[70vw] h-full bg-white">
         <MenuItems handleNavigate={handleNavigate} />
       </div>
     </Drawer>

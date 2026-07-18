@@ -1,14 +1,20 @@
 import React from 'react'
-import { topMeels } from '../../../Data/topMeels'
 
-const CarouselItem = ({image, title, onClick}) => {
+const CarouselItem = ({ image, title, onClick }) => {
   return (
-        <div className='flex flex-col justify-center items-center cursor-pointer hover:opacity-75' onClick={() => onClick(title)}>
-            <img className='w-[5rem] h-[5rem] lg:w-[7rem] lg:h-[7rem] rounded-full object-cover object-center' src={image} alt={title} />
-            <span className='py-2 font-semibold text-sm text-gray-400'>{title}</span>
-        </div>
-         
-    
+    <div
+      className='flex flex-col justify-center items-center cursor-pointer group'
+      onClick={() => onClick(title)}
+    >
+      <div className="rounded-full overflow-hidden w-[5rem] h-[5rem] lg:w-[7rem] lg:h-[7rem] border-2 border-transparent group-hover:border-[#e91e63] transition-all">
+        <img
+          className='w-full h-full object-cover object-center'
+          src={image}
+          alt={title}
+        />
+      </div>
+      <span className='py-2 font-medium text-sm text-gray-700 group-hover:text-[#e91e63] transition-colors'>{title}</span>
+    </div>
   )
 }
 

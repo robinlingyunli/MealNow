@@ -7,6 +7,16 @@ export const DELETE_PROMOTION_SUCCESS = "DELETE_PROMOTION_SUCCESS";
 export const PROMOTION_REQUEST = "PROMOTION_REQUEST";
 export const PROMOTION_FAILURE = "PROMOTION_FAILURE";
 
+export const getAllPromotions = () => async (dispatch) => {
+  dispatch({ type: PROMOTION_REQUEST });
+  try {
+    const { data } = await api.get(`/api/promotions`);
+    dispatch({ type: GET_PROMOTIONS_SUCCESS, payload: data });
+  } catch (e) {
+    dispatch({ type: PROMOTION_FAILURE, payload: e.message });
+  }
+};
+
 export const getPromotionsByRestaurant = ({ jwt, restaurantId }) => async (dispatch) => {
   dispatch({ type: PROMOTION_REQUEST });
   try {

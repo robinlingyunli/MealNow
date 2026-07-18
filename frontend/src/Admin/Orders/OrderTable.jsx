@@ -149,7 +149,7 @@ const OrdersTable = ({ isDashboard, name }) => {
                         
                       )}
                     </TableCell>}
-                    {!isDashboard &&<TableCell className="text-white">
+                    {!isDashboard &&<TableCell className="">
                       <Chip
                         sx={{
                           color: "white !important",
@@ -165,13 +165,13 @@ const OrdersTable = ({ isDashboard, name }) => {
                             ? "success"
                             : "secondary"
                         }
-                        className="text-white"
+                        className=""
                       />
                     </TableCell>}
                     {!isDashboard && (
                       <TableCell
                         sx={{ textAlign: "center" }}
-                        className="text-white"
+                        className=""
                       >
                         <div>
                           <Button
@@ -210,7 +210,7 @@ const OrdersTable = ({ isDashboard, name }) => {
                     {/* {!isDashboard && (
                     <TableCell
                       sx={{ textAlign: "center" }}
-                      className="text-white"
+                      className=""
                     >
                       <Button
                         onClick={() => handleDeleteOrder(item._id)}

@@ -14,6 +14,8 @@ public interface foodRepository extends JpaRepository<Food, Long> {
 
 	
 	List<Food> findByRestaurantId(Long restaurantId);
+
+	long countByFoodCategoryId(Long categoryId);
 	
 	@Query("SELECT f FROM Food f WHERE "
 			+ "f.name LIKE %:keyword% OR "

@@ -52,10 +52,11 @@ public class FoodServiceImplementation implements FoodService {
 			food.setDescription(req.getDescription());
 			food.setImages(req.getImages());
 			food.setName(req.getName());
-			food.setPrice((long) req.getPrice());
+			food.setPrice(req.getPrice());
 			food.setSeasonal(req.isSeasonal());		
 			food.setVegetarian(req.isVegetarian());
 			food.setIngredients(req.getIngredients());
+			food.setAvailable(true);
 		food.setRestaurant(restaurant);
 			food = foodRepository.save(food);
 

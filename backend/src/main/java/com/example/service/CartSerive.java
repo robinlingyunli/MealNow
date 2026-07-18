@@ -19,7 +19,7 @@ public interface CartSerive {
 
 	public Cart removeItemFromCart(Long cartItemId, String jwt) throws UserException, CartException, CartItemException;
 
-	public Long calculateCartTotals(Cart cart) throws UserException;
+	public Double calculateCartTotals(Cart cart) throws UserException;
 	
 	public Cart findCartById(Long id) throws CartException;
 	

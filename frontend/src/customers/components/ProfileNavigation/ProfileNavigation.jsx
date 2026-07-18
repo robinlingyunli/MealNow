@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HomeIcon from "@mui/icons-material/Home";
-import EventIcon from "@mui/icons-material/Event";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../State/Authentication/Action";
 
@@ -13,20 +13,20 @@ const menu = [
   { title: "Orders", icon: <ShoppingBagIcon /> },
   { title: "Favorites", icon: <FavoriteIcon /> },
   { title: "Address", icon: <HomeIcon /> },
-  { title: "Events", icon: <EventIcon /> },
+  { title: "Promotions", icon: <LocalOfferIcon />, path: "events" },
   { title: "Logout", icon: <LogoutIcon /> },
 ];
 
 const MenuItems = ({ handleNavigate }) => (
-  <div className="flex flex-col text-xl py-4">
+  <div className="flex flex-col text-base py-4">
     {menu.map((item, i) => (
       <React.Fragment key={item.title}>
         <div
           onClick={() => handleNavigate(item)}
-          className="px-5 py-8 flex items-center space-x-5 cursor-pointer hover:bg-gray-800"
+          className="px-5 py-6 flex items-center space-x-4 cursor-pointer hover:bg-gray-100 text-gray-700 hover:text-gray-900 transition-colors"
         >
-          {item.icon}
-          <span>{item.title}</span>
+          <span className="text-gray-500">{item.icon}</span>
+          <span className="font-medium">{item.title}</span>
         </div>
         {i !== menu.length - 1 && <Divider />}
       </React.Fragment>
@@ -44,14 +44,14 @@ const ProfileNavigation = ({ handleClose = () => {}, open }) => {
       dispatch(logout());
       navigate("/");
     } else {
-      navigate(`/my-profile/${item.title.toLowerCase()}`);
+      navigate(`/my-profile/${item.path ?? item.title.toLowerCase()}`);
     }
     handleClose();
   };
 
   if (!isSmallScreen) {
     return (
-      <div className="w-[20vw] min-h-screen border-r border-gray-800 shrink-0">
+      <div className="w-[20vw] min-h-screen border-r border-gray-200 bg-white shrink-0">
         <MenuItems handleNavigate={handleNavigate} />
       </div>
     );
@@ -59,7 +59,7 @@ const ProfileNavigation = ({ handleClose = () => {}, open }) => {
 
   return (
     <Drawer anchor="left" open={open} onClose={handleClose}>
-      <div className="w-[70vw] h-full">
+      <div className="w-[70vw] h-full bg-white">
         <MenuItems handleNavigate={handleNavigate} />
       </div>
     </Drawer>

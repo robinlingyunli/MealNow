@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.css";
-import Navbar from "../../components/Navbar/Navbar";
 import MultipleItemsCarousel from "../../components/MultiItemCarousel/MultiItemCarousel";
-import { restaurents } from "../../../Data/restaurents";
 import RestaurantCard from "../../components/RestarentCard/RestaurantCard";
+import PromotionBanner from "../../components/Promotion/PromotionBanner";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRestaurantsAction } from "../../../State/Customers/Restaurant/restaurant.action";
+import { getAllPromotions } from "../../../State/Admin/Promotion/promotion.action";
 
 const HomePage = () => {
-  const { auth, restaurant } = useSelector((store) => store);
+  const { auth, restaurant, promotion } = useSelector((store) => store);
   const dispatch = useDispatch();
   const [selectedCuisine, setSelectedCuisine] = useState(null);
 
   useEffect(() => {
-    if (auth.user) {
-      dispatch(getAllRestaurantsAction(localStorage.getItem("jwt")));
-    }
+    dispatch(getAllRestaurantsAction(localStorage.getItem("jwt")));
+    dispatch(getAllPromotions());
   }, [auth.user]);
 
   const handleCuisineClick = (title) => {
-    setSelectedCuisine((prev) => (prev === title ? null : title));
+    setSelectedCuisine(title);
   };
 
   const filteredRestaurants = selectedCuisine
@@ -29,45 +28,41 @@ const HomePage = () => {
     : restaurant.restaurants;
 
   return (
-    <div className="">
-      <section className="-z-50 banner relative flex flex-col justify-center items-center">
-        <div className="w-[50vw] z-10 text-center">
-          <p className="text-2xl lg:text-7xl font-bold z-10 py-5">Meal Now</p>
-          <p className="z-10   text-gray-300 text-xl lg:text-4xl">
-            Taste the Convenience: Food, Fast and Delivered.
-          </p>
-        </div>
-
-        <div className="cover absolute top-0 left-0 right-0"></div>
-        <div className="fadout"></div>
+    <div className="bg-[#F6F6F6] min-h-screen">
+      <section className="p-10 lg:py-10 lg:px-20 bg-white">
+        <p className="text-xl font-semibold text-gray-800 pb-6">Browse by Cuisine</p>
+        <MultipleItemsCarousel onCuisineClick={handleCuisineClick} />
       </section>
 
-      <section className="p-10 lg:py-10 lg:px-20">
-        <div className="">
-          <p className="text-2xl font-semibold text-gray-400 py-3 pb-10">
-            Top Meels
-          </p>
-          <MultipleItemsCarousel onCuisineClick={handleCuisineClick} />
-        </div>
-      </section>
-      <section className="px-5 lg:px-20">
-        <div className="">
-          <h1 className="text-2xl font-semibold text-gray-400 py-3 ">
-            {selectedCuisine ? `${selectedCuisine} Restaurants` : "Order From Our Handpicked Favorites"}
+      {promotion.promotions?.length > 0 && (
+        <section className="px-5 lg:px-20 py-8 bg-[#F6F6F6]">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Deals & Promotions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {promotion.promotions.map((item) => (
+              <PromotionBanner key={item.id} item={item} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="px-5 lg:px-20 py-8">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-semibold text-gray-900">
+            {selectedCuisine ? `${selectedCuisine} Restaurants` : "Restaurants"}
           </h1>
           {selectedCuisine && (
             <button
               onClick={() => setSelectedCuisine(null)}
-              className="mb-4 text-sm text-gray-400 underline"
+              className="text-sm text-[#e91e63] font-medium hover:underline"
             >
               Clear filter
             </button>
           )}
-          <div className="flex flex-wrap items-center justify-around ">
-            {filteredRestaurants.map((item, i) => (
-              <RestaurantCard data={item} index={i} />
-            ))}
-          </div>
+        </div>
+        <div className="flex flex-wrap gap-4">
+          {filteredRestaurants.map((item, i) => (
+            <RestaurantCard key={i} data={item} index={i} />
+          ))}
         </div>
       </section>
     </div>

@@ -61,17 +61,16 @@ public class OrderServiceImplementation implements OrderService {
 		
 	    Address shippAddress = order.getDeliveryAddress();
 
-	    
-	    Address savedAddress = addressRepository.save(shippAddress);
-	    
-	    if(!user.getAddresses().contains(savedAddress)) {
-	    	user.getAddresses().add(savedAddress);
+	    Address savedAddress;
+	    if (shippAddress.getId() != null) {
+	    	savedAddress = addressRepository.findById(shippAddress.getId()).orElse(addressRepository.save(shippAddress));
+	    } else {
+	    	savedAddress = addressRepository.save(shippAddress);
+	    	if (!user.getAddresses().contains(savedAddress)) {
+	    		user.getAddresses().add(savedAddress);
+	    	}
+	    	userRepository.save(user);
 	    }
-	    
-		
-		System.out.println("user addresses --------------  "+user.getAddresses());
-		   
-		 userRepository.save(user);
 	    
 	    Optional<Restaurant> restaurant = restaurantRepository.findById(order.getRestaurantId());
 	    if(restaurant.isEmpty()) {
@@ -87,21 +86,24 @@ public class OrderServiceImplementation implements OrderService {
 	    createdOrder.setRestaurant(restaurant.get());
 
         Cart cart = cartService.findCartByUserId(user.getId());
-        
-	    List<OrderItem> orderItems = new ArrayList<>();
-	    
-	    for (CartItem cartItem : cart.getItems()) {
-	        OrderItem orderItem = new OrderItem();
-	       orderItem.setFood(cartItem.getFood());
-	       orderItem.setIngredients(cartItem.getIngredients());
-	       orderItem.setQuantity(cartItem.getQuantity());
-	        orderItem.setTotalPrice(cartItem.getFood().getPrice()* cartItem.getQuantity());
 
+	    List<OrderItem> orderItems = new ArrayList<>();
+
+	    for (CartItem cartItem : cart.getItems()) {
+	    	if (!cartItem.getFood().getRestaurant().getId().equals(order.getRestaurantId())) continue;
+	        OrderItem orderItem = new OrderItem();
+	        orderItem.setFood(cartItem.getFood());
+	        orderItem.setIngredients(cartItem.getIngredients());
+	        orderItem.setQuantity(cartItem.getQuantity());
+	        orderItem.setTotalPrice(cartItem.getFood().getPrice() * cartItem.getQuantity());
 	        OrderItem savedOrderItem = orderItemRepository.save(orderItem);
 	        orderItems.add(savedOrderItem);
 	    }
-   
-	     Long totalPrice = cartService.calculateCartTotals(cart);
+
+	    Double totalPrice = cart.getItems().stream()
+	    	.filter(item -> item.getFood().getRestaurant().getId().equals(order.getRestaurantId()))
+	    	.mapToDouble(item -> item.getFood().getPrice() * item.getQuantity())
+	    	.sum();
 
 	    createdOrder.setTotalAmount(totalPrice);
 	    createdOrder.setRestaurant(restaurant.get());

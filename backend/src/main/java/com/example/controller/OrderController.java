@@ -55,16 +55,22 @@ public class OrderController {
  
     
     @GetMapping("/order/user")
-    public ResponseEntity<List<Order>> getAllUserOrders(	@RequestHeader("Authorization") String jwt) throws OrderException, UserException{
-    
-    	User user=userService.findUserProfileByJwt(jwt);
-    	
-    	if(user.getId()!=null) {
-    	List<Order> userOrders = orderService.getUserOrders(user.getId());
-    	return ResponseEntity.ok(userOrders);
-    	}else {
-    		return new ResponseEntity<List<Order>>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<List<Order>> getAllUserOrders(@RequestHeader("Authorization") String jwt) throws OrderException, UserException {
+    	User user = userService.findUserProfileByJwt(jwt);
+    	if (user.getId() != null) {
+    		List<Order> userOrders = orderService.getUserOrders(user.getId());
+    		return ResponseEntity.ok(userOrders);
+    	} else {
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
+    }
+
+    @DeleteMapping("/order/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id, @RequestHeader("Authorization") String jwt)
+            throws OrderException, UserException {
+        User user = userService.findUserProfileByJwt(jwt);
+        orderService.cancelOrder(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
 

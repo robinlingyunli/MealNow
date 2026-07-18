@@ -1,4 +1,4 @@
 export const cartTotal=(items)=>{
-
-   return items.reduce((accumlatore, item)=>item.totalPrice+accumlatore,0)
+   const total = items.reduce((acc, item) => item.totalPrice + acc, 0);
+   return Math.round(total * 100) / 100;
 }

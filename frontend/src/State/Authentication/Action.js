@@ -84,8 +84,9 @@ export const getUser = (token) => {
       dispatch({ type: GET_USER_SUCCESS, payload: user });
       console.log("req User ", user);
     } catch (error) {
-      const errorMessage = error.message;
-      dispatch({ type: GET_USER_FAILURE, payload: errorMessage });
+      // token 失效或用户不存在，清掉本地 JWT 避免反复报错
+      localStorage.removeItem("jwt");
+      dispatch({ type: GET_USER_FAILURE, payload: null });
     }
   };
 };

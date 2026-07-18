@@ -20,7 +20,7 @@ public class OrderItem {
     private Food food;
     
     private int quantity;
-    private Long totalPrice;
+    private Double totalPrice;
 
     @ElementCollection
     private List<String> ingredients;

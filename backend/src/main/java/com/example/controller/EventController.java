@@ -2,8 +2,10 @@ package com.example.controller;
 
 import com.example.Exception.RestaurantException;
 import com.example.model.Event;
+import com.example.model.Promotion;
 import com.example.model.Restaurant;
 import com.example.repository.EventRepository;
+import com.example.repository.PromotionRepository;
 import com.example.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,9 @@ public class EventController {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private PromotionRepository promotionRepository;
 
     @Autowired
     private RestaurantService restaurantService;
@@ -46,5 +51,10 @@ public class EventController {
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
         eventRepository.deleteById(eventId);
         return ResponseEntity.ok("Event deleted");
+    }
+
+    @GetMapping("/api/promotions")
+    public ResponseEntity<List<Promotion>> getAllPromotions() {
+        return ResponseEntity.ok(promotionRepository.findAll());
     }
 }

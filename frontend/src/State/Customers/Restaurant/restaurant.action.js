@@ -38,6 +38,9 @@ import {
   GET_RESTAURANTS_CATEGORY_FAILURE,
   GET_RESTAURANTS_CATEGORY_REQUEST,
   GET_RESTAURANTS_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_REQUEST,
+  DELETE_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
   GET_RESTAURANT_BY_USER_ID_FAILURE,
   GET_RESTAURANT_BY_USER_ID_REQUEST,
   GET_RESTAURANT_BY_USER_ID_SUCCESS,
@@ -51,9 +54,7 @@ export const getAllRestaurantsAction = (token) => {
     dispatch(getAllRestaurantsRequest());
     try {
       const { data } = await api.get("/api/restaurants", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       dispatch(getAllRestaurantsSuccess(data));
       console.log("all restaurant ", data);
@@ -278,6 +279,24 @@ export const createCategoryAction = ({ reqData, jwt }) => {
     } catch (error) {
       console.log("catch - ", error);
       dispatch({ type: CREATE_CATEGORY_FAILURE, payload: error });
+    }
+  };
+};
+
+export const deleteCategoryAction = ({ categoryId, jwt }) => {
+  return async (dispatch) => {
+    dispatch({ type: DELETE_CATEGORY_REQUEST });
+    try {
+      await api.delete(`/api/admin/category/${categoryId}`, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
+      dispatch({ type: DELETE_CATEGORY_SUCCESS, payload: categoryId });
+      return { success: true };
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Failed to delete category.";
+      dispatch({ type: DELETE_CATEGORY_FAILURE, payload: message });
+      return { success: false, message };
     }
   };
 };

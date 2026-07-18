@@ -19,11 +19,10 @@ function App() {
   const jwt = localStorage.getItem("jwt");
   
   useEffect(() => {
-    
+    dispatch(getAllRestaurantsAction(jwt));
     if (jwt) {
       dispatch(getUser(jwt));
       dispatch(findCart(jwt));
-      dispatch(getAllRestaurantsAction(jwt));
     }
   }, [auth.jwt]);
 

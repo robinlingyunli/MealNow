@@ -37,10 +37,17 @@ public class CategoryController {
 	@GetMapping("/category/restaurant/{id}")
 	public ResponseEntity<List<Category>> getRestaurantsCategory(
 			@PathVariable Long id,
-			@RequestHeader("Authorization")String jwt) throws RestaurantException, UserException {
-		User user=userService.findUserProfileByJwt(jwt);
+			@RequestHeader(value="Authorization", required=false) String jwt) throws RestaurantException, UserException {
 		List<Category> categories=categoryService.findCategoryByRestaurantId(id);
 		return new ResponseEntity<>(categories,HttpStatus.OK);
+	}
+
+	@DeleteMapping("/admin/category/{id}")
+	public ResponseEntity<Void> deleteCategory(
+			@PathVariable Long id,
+			@RequestHeader("Authorization") String jwt) throws RestaurantException, UserException {
+		categoryService.deleteCategory(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }

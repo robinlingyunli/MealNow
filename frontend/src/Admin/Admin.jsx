@@ -58,7 +58,9 @@ const Admin = () => {
   }, [restaurant.usersRestaurant]);
   return (
     <div>
-      <Navbar />
+      <div className="sticky top-0 z-50">
+        <Navbar />
+      </div>
       <div className="lg:flex justify-between">
         <div>
           <AdminSidebar handleClose={handleCloseSideBar} open={openSideBar} />

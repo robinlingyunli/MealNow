@@ -61,7 +61,7 @@ const RatingsSection = ({ restaurantId }) => {
 
       <div className="space-y-4">
         {review.reviews.map((r) => (
-          <div key={r.id} className="border border-gray-700 rounded-lg p-4 space-y-2">
+          <div key={r.id} className="border border-gray-200 rounded-lg p-4 space-y-2 bg-white">
             <div className="flex items-center justify-between">
               <p className="font-semibold">{r.user?.fullName || "User"}</p>
               <div className="flex items-center gap-1">

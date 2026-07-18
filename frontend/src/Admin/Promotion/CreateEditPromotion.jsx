@@ -154,8 +154,8 @@ const CreateEditPromotion = () => {
               <div
                 key={food.id}
                 className={`flex items-center gap-4 p-3 rounded-lg border ${
-                  selected ? "border-blue-500" : "border-gray-700"
-                } bg-gray-900`}
+                  selected ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white"
+                }`}
               >
                 <Checkbox
                   checked={selected}
@@ -169,11 +169,11 @@ const CreateEditPromotion = () => {
                 />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">{food.name}</p>
-                  <p className="text-sm text-gray-400">${food.price}</p>
+                  <p className="text-sm text-gray-500">${food.price}</p>
                 </div>
                 {selected && (
                   <div className="w-40 flex-shrink-0">
-                    <Typography variant="caption" className="text-gray-300">
+                    <Typography variant="caption" className="text-gray-600">
                       Discount: {discount}%
                     </Typography>
                     <Slider

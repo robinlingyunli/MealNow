@@ -7,8 +7,8 @@ import RatingsSection from "../../components/Review/RatingsSection";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurantById, getRestaurantsCategory } from "../../../State/Customers/Restaurant/restaurant.action";
 import { getMenuItemsByRestaurantId } from "../../../State/Customers/Menu/menu.action";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import TodayIcon from '@mui/icons-material/Today';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import TodayIcon from "@mui/icons-material/Today";
 
 const Restaurant = () => {
   const dispatch = useDispatch();
@@ -27,14 +27,16 @@ const Restaurant = () => {
   useEffect(() => {
     dispatch(getRestaurantById({ jwt, restaurantId: id }));
     dispatch(getRestaurantsCategory({ restaurantId: id, jwt }));
-    dispatch(getMenuItemsByRestaurantId({
-      jwt,
-      restaurantId: id,
-      seasonal: false,
-      vegetarian: false,
-      nonveg: false,
-      foodCategory: "",
-    }));
+    dispatch(
+      getMenuItemsByRestaurantId({
+        jwt,
+        restaurantId: id,
+        seasonal: false,
+        vegetarian: false,
+        nonveg: false,
+        foodCategory: "",
+      })
+    );
   }, [id]);
 
   const groupedItems = menu.menuItems.reduce((acc, item) => {
@@ -63,91 +65,142 @@ const Restaurant = () => {
 
   const filteredGrouped = searchKeyword.trim()
     ? Object.fromEntries(
-        Object.entries(groupedItems).map(([cat, items]) => [cat, filterBySearch(items)]).filter(([, items]) => items.length > 0)
+        Object.entries(groupedItems)
+          .map(([cat, items]) => [cat, filterBySearch(items)])
+          .filter(([, items]) => items.length > 0)
       )
     : groupedItems;
 
+  const sidebarItem = (label, isActive, onClick) => (
+    <p
+      onClick={onClick}
+      className={`cursor-pointer py-2 text-sm font-medium transition-colors pl-3 border-l-4 ${
+        isActive
+          ? "border-gray-900 text-gray-900"
+          : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
+      }`}
+    >
+      {label}
+    </p>
+  );
+
   return (
     <>
-      <div className="px-5 lg:px-20">
+      <div className="px-5 lg:px-20 bg-white min-h-screen">
         <section>
-          <div className="pt-3 pb-5 lg:flex lg:items-center lg:justify-between">
+          {restaurant.restaurant?.images?.[0] && (
+            <div className="w-full h-56 lg:h-72 overflow-hidden rounded-2xl mt-4">
+              <img
+                src={restaurant.restaurant.images[0]}
+                alt={restaurant.restaurant.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          <div className="pt-3 pb-5 lg:flex lg:items-start lg:justify-between">
             <div>
-              <h1 className="text-4xl font-semibold py-8">{restaurant.restaurant?.name}</h1>
-              <p className="text-gray-500 my-4">{restaurant.restaurant?.description}</p>
-              <div className="space-y-3 mt-3">
-                <p className="text-gray-500 flex items-center gap-3">
-                  <LocationOnIcon /> <span>{restaurant.restaurant?.address.streetAddress}</span>
+              <h1 className="text-3xl font-bold py-6 text-gray-900">
+                {restaurant.restaurant?.name}
+              </h1>
+              <p className="text-gray-500 my-2 text-sm">{restaurant.restaurant?.description}</p>
+              <div className="space-y-2 mt-2">
+                <p className="text-gray-500 flex items-center gap-2 text-sm">
+                  <LocationOnIcon fontSize="small" />
+                  <span>{restaurant.restaurant?.address.streetAddress}</span>
                 </p>
-                <p className="flex items-center gap-3 text-gray-500">
-                  <TodayIcon /> <span className="text-orange-300">{restaurant.restaurant?.openingHours} (Today)</span>
+                <p className="flex items-center gap-2 text-sm text-gray-500">
+                  <TodayIcon fontSize="small" />
+                  <span className="text-emerald-600 font-medium">
+                    {restaurant.restaurant?.openingHours} (Today)
+                  </span>
                 </p>
               </div>
             </div>
-            <div className="mt-6 lg:mt-0 lg:w-[35%]">
+            <div className="mt-6 lg:mt-8 lg:w-[35%]">
               <TextField
                 fullWidth
                 variant="outlined"
+                size="small"
                 placeholder={`Search in ${restaurant.restaurant?.name || "restaurant"}...`}
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <SearchIcon sx={{ color: "gray" }} />
+                      <SearchIcon sx={{ color: "#9E9E9E", fontSize: "1.1rem" }} />
                     </InputAdornment>
                   ),
                 }}
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "24px",
+                    backgroundColor: "#F6F6F6",
+                    "& fieldset": { borderColor: "transparent" },
+                    "&:hover fieldset": { borderColor: "#E0E0E0" },
+                  },
+                }}
               />
             </div>
           </div>
         </section>
+
         <Divider />
 
-        <section className="pt-[2rem] lg:flex relative">
+        <section className="pt-8 lg:flex relative">
+          {/* Left sidebar */}
           <div className="lg:w-[20%]">
-            <div className="lg:sticky top-28 space-y-3">
-              <Typography variant="h5" sx={{ paddingBottom: "0.5rem", fontWeight: 600 }}>
+            <div className="lg:sticky top-28 space-y-1">
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#9E9E9E", fontWeight: 700, letterSpacing: "0.08em", pb: 1, fontSize: "0.7rem", textTransform: "uppercase" }}
+              >
                 Menu
               </Typography>
-              <p
-                onClick={() => { setActiveCategory("all"); setActiveSide("menu"); }}
-                className={`cursor-pointer py-1 text-sm ${activeSide === "menu" && activeCategory === "all" ? "text-white font-semibold" : "text-gray-400"} hover:text-white transition-colors`}
-              >
-                All
-              </p>
-              {categories.map((name) => (
-                <p
-                  key={name}
-                  onClick={() => { setActiveCategory(name); setActiveSide("menu"); }}
-                  className={`cursor-pointer py-1 text-sm ${activeSide === "menu" && activeCategory === name ? "text-white font-semibold" : "text-gray-400"} hover:text-white transition-colors`}
-                >
-                  {name}
-                </p>
-              ))}
 
-              <Divider sx={{ my: 1 }} />
+              {sidebarItem(
+                "All",
+                activeSide === "menu" && activeCategory === "all",
+                () => { setActiveCategory("all"); setActiveSide("menu"); }
+              )}
+
+              {categories.map((name) =>
+                sidebarItem(
+                  name,
+                  activeSide === "menu" && activeCategory === name,
+                  () => { setActiveCategory(name); setActiveSide("menu"); }
+                )
+              )}
+
+              <Divider sx={{ my: 2 }} />
 
               <Typography
-                variant="h5"
+                variant="subtitle2"
                 onClick={() => setActiveSide("reviews")}
-                sx={{ fontWeight: 600, cursor: "pointer", color: "white" }}
+                sx={{
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  color: activeSide === "reviews" ? "#1A1A1A" : "#6B6B6B",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  "&:hover": { color: "#1A1A1A" },
+                }}
               >
                 Reviews
               </Typography>
             </div>
           </div>
 
-          <div className="lg:w-[80%] lg:pl-10 space-y-10">
-            {activeSide === "menu" && (
-              activeCategory === "all"
+          {/* Main content */}
+          <div className="lg:w-[80%] lg:pl-10 space-y-10 pb-16">
+            {activeSide === "menu" &&
+              (activeCategory === "all"
                 ? Object.entries(filteredGrouped).map(([categoryName, items]) => (
                     <div key={categoryName}>
-                      <Typography variant="h5" sx={{ fontWeight: 600, paddingBottom: "1rem" }}>
+                      <Typography variant="h6" sx={{ fontWeight: 700, pb: 2, color: "#1A1A1A" }}>
                         {categoryName}
                       </Typography>
-                      <div className="space-y-3">
+                      <div>
                         {items.map((item) => (
                           <MenuItemCard key={item.id} item={item} />
                         ))}
@@ -156,17 +209,16 @@ const Restaurant = () => {
                   ))
                 : (
                   <div>
-                    <Typography variant="h5" sx={{ fontWeight: 600, paddingBottom: "1rem" }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, pb: 2, color: "#1A1A1A" }}>
                       {activeCategory}
                     </Typography>
-                    <div className="space-y-3">
+                    <div>
                       {displayedItems.map((item) => (
                         <MenuItemCard key={item.id} item={item} />
                       ))}
                     </div>
                   </div>
-                )
-            )}
+                ))}
             {activeSide === "reviews" && (
               <div ref={reviewsRef}>
                 <RatingsSection restaurantId={id} />
@@ -176,7 +228,10 @@ const Restaurant = () => {
         </section>
       </div>
 
-      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={menu.loading || restaurant.loading}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={menu.loading || restaurant.loading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
     </>

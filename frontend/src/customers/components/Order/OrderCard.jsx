@@ -1,24 +1,27 @@
-import { Button, Card } from "@mui/material";
+import { Card } from "@mui/material";
 import React from "react";
 
-const OrderCard = ({order,status}) => {
+const OrderCard = ({ order }) => {
+  const unitPrice = order.food?.price?.toFixed(2);
+  const lineTotal = order.totalPrice?.toFixed(2);
+
   return (
-    <Card className="flex justify-between items-center p-5 ">
-      <div className="flex items-center space-x-5">
+    <div className="flex items-center justify-between px-5 py-4">
+      <div className="flex items-center gap-4">
         <img
-          className="h-16 w-16"
-          src={order.food.images[0]}
-          alt=""
+          className="h-14 w-14 rounded-lg object-cover"
+          src={order.food?.images?.[0]}
+          alt={order.food?.name}
         />
         <div>
-          <p>{order.food.name}</p>
-          <p className="text-gray-400">${order.food.price}</p>
+          <p className="font-medium text-gray-900">{order.food?.name}</p>
+          <p className="text-sm text-gray-400">
+            ${unitPrice} × {order.quantity}
+          </p>
         </div>
       </div>
-      <div>
-        <Button className="cursor-not-allowed" variant="contained">{status}</Button>
-      </div>
-    </Card>
+      <p className="font-semibold text-gray-900">${lineTotal}</p>
+    </div>
   );
 };
 

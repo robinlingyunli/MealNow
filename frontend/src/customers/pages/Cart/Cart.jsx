@@ -4,7 +4,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import AddressCard from "../../components/Address/AddressCard";
 import CartItemCard from "../../components/CartItem/CartItemCard";
 import { useDispatch, useSelector } from "react-redux";
-
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import { Grid, TextField } from "@mui/material";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -13,7 +12,6 @@ import { createOrder } from "../../../State/Customers/Orders/Action";
 import { saveAddress, updateAddress, deleteAddress } from "../../../State/Authentication/Action";
 import { findCart } from "../../../State/Customers/Cart/cart.action";
 import { isValid } from "../../util/ValidToOrder";
-import { cartTotal } from "./totalPay";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 
 const blankValues = { streetAddress: "", state: "", pincode: "", city: "" };
@@ -37,6 +35,22 @@ const Cart = () => {
   useEffect(() => {
     dispatch(findCart(jwt));
   }, []);
+
+  // Group cart items by restaurant
+  const groupedByRestaurant = cart.cartItems.reduce((acc, item) => {
+    const rid = item.food?.restaurant?.id;
+    if (!rid) return acc;
+    if (!acc[rid]) acc[rid] = { restaurant: item.food.restaurant, items: [] };
+    acc[rid].items.push(item);
+    return acc;
+  }, {});
+
+  const restaurantGroups = Object.values(groupedByRestaurant);
+
+  const groupTotal = (items) => {
+    const total = items.reduce((sum, item) => sum + item.totalPrice, 0);
+    return (Math.round(total * 100) / 100).toFixed(2);
+  };
 
   const handleSaveAddress = (values, { resetForm }) => {
     dispatch(saveAddress({
@@ -63,13 +77,14 @@ const Cart = () => {
     if (selectedAddress?.id === item.id) setSelectedAddress(null);
   };
 
-  const handlePay = () => {
+  const handlePay = (restaurantId, items) => {
     if (!selectedAddress) return;
     const data = {
       jwt,
       order: {
-        restaurantId: cart.cartItems[0].food?.restaurant.id,
+        restaurantId,
         deliveryAddress: {
+          id: selectedAddress.id,
           fullName: auth.user?.fullName,
           streetAddress: selectedAddress.streetAddress,
           city: selectedAddress.city,
@@ -79,7 +94,7 @@ const Cart = () => {
         },
       },
     };
-    if (isValid(cart.cartItems)) {
+    if (isValid(items)) {
       dispatch(createOrder(data));
     } else {
       setOpenSnakbar(true);
@@ -99,43 +114,67 @@ const Cart = () => {
     <Fragment>
       {cart.cartItems.length > 0 ? (
         <main className="lg:flex justify-between">
-          <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
-            {cart.cartItems.map((item, i) => (
-              <CartItemCard key={i} item={item} />
-            ))}
+          {/* Left: grouped cart */}
+          <section className="lg:w-[40%] space-y-6 pt-10 px-4 lg:px-8">
+            {restaurantGroups.map(({ restaurant, items }) => (
+              <div key={restaurant.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="px-5 py-3 border-b border-gray-100">
+                  <p className="font-semibold text-gray-900">{restaurant.name}</p>
+                </div>
 
-            <Divider />
-            <div className="billDetails px-5 text-sm">
-              <p className="font-extralight py-5">Bill Details</p>
-              <div className="space-y-3">
-                <div className="flex justify-between text-gray-400">
-                  <p>Item Total</p>
-                  <p>${cartTotal(cart.cartItems)}</p>
+                <div className="divide-y divide-gray-50">
+                  {items.map((item, i) => (
+                    <CartItemCard key={i} item={item} />
+                  ))}
                 </div>
-                <div className="flex justify-between text-gray-400">
-                  <p>Deliver Fee</p>
-                  <p>$21</p>
-                </div>
-                <div className="flex justify-between text-gray-400">
-                  <p>Platform Fee</p>
-                  <p>$5</p>
-                </div>
-                <div className="flex justify-between text-gray-400">
-                  <p>GST and Restaurant Charges</p>
-                  <p>$33</p>
-                </div>
+
                 <Divider />
-                <div className="flex justify-between text-gray-400">
-                  <p>Total Pay</p>
-                  <p>${cartTotal(cart.cartItems) + 33}</p>
+                <div className="px-5 py-4 space-y-2 text-sm text-gray-600">
+                  <div className="flex justify-between">
+                    <span>Item Total</span>
+                    <span>${groupTotal(items)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Delivery Fee</span>
+                    <span>$21</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Platform Fee</span>
+                    <span>$5</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>GST and Restaurant Charges</span>
+                    <span>$33</span>
+                  </div>
+                  <Divider />
+                  <div className="flex justify-between font-semibold text-gray-900">
+                    <span>Total Pay</span>
+                    <span>${(parseFloat(groupTotal(items)) + 33).toFixed(2)}</span>
+                  </div>
                 </div>
+
+                {selectedAddress && (
+                  <div className="px-5 pb-5">
+                    <Button
+                      fullWidth
+                      onClick={() => handlePay(restaurant.id, items)}
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      sx={{ borderRadius: "12px", py: 1.5, fontSize: "0.95rem" }}
+                    >
+                      Pay ${(parseFloat(groupTotal(items)) + 33).toFixed(2)}
+                    </Button>
+                  </div>
+                )}
               </div>
-            </div>
+            ))}
           </section>
 
           <Divider orientation="vertical" flexItem />
 
-          <section className="lg:w-[70%] flex justify-center px-5 pb-10 lg:pb-0">
+          {/* Right: address selection */}
+          <section className="lg:w-[60%] flex justify-center px-5 pb-10 lg:pb-0">
             <div className="w-full max-w-2xl">
               <h1 className="text-center font-semibold text-2xl py-10">
                 Choose Delivery Address
@@ -163,18 +202,10 @@ const Cart = () => {
                 </Card>
               </div>
 
-              {selectedAddress && (
-                <div className="flex justify-center mt-8">
-                  <Button
-                    onClick={handlePay}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    sx={{ px: 6, py: 1.5, fontSize: "1rem" }}
-                  >
-                    Pay ${cartTotal(cart.cartItems) + 33}
-                  </Button>
-                </div>
+              {!selectedAddress && (
+                <p className="text-center text-gray-400 text-sm mt-6">
+                  Select an address above to enable checkout
+                </p>
               )}
             </div>
           </section>

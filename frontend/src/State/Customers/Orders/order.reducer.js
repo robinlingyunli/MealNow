@@ -1,5 +1,6 @@
 import { GET_USER_FAILURE } from "../../Authentication/ActionType";
 import {
+  DELETE_ORDER_SUCCESS,
   GET_USERS_NOTIFICATION_SUCCESS,
   GET_USERS_ORDERS_FAILURE,
   GET_USERS_ORDERS_REQUEST,
@@ -21,6 +22,8 @@ export const orderReducer = (state = initialState, { type, payload }) => {
     case GET_USERS_NOTIFICATION_SUCCESS:
         return { ...state,notifications:payload, error: null, loading: false };
   
+    case DELETE_ORDER_SUCCESS:
+      return { ...state, orders: state.orders.filter((o) => o.id !== payload) };
     case GET_USERS_ORDERS_FAILURE:
       return { ...state, error: payload, loading: false };
 

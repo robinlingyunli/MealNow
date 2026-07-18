@@ -94,11 +94,6 @@ const MenuItemTable = ({ isDashboard, name }) => {
                 <TableCell>Image</TableCell>
                 <TableCell>Title</TableCell>
                 {/* <TableCell sx={{ textAlign: "center" }}>Category</TableCell> */}
-                {!isDashboard && (
-                  <TableCell sx={{ textAlign: "" }}>
-                    Ingredients
-                  </TableCell>
-                )}
                 <TableCell sx={{ textAlign: "center" }}>Price</TableCell>
                 {/* <TableCell sx={{ textAlign: "center" }}>Quantity</TableCell> */}
 
@@ -138,39 +133,6 @@ const MenuItemTable = ({ isDashboard, name }) => {
                     </Box>
                   </TableCell>
 
-                  {!isDashboard && (
-                    <TableCell>
-                      {Object.keys(
-                        categorizedIngredients(item?.ingredients)
-                      )?.map((category) => (
-                        <div key={category}>
-                          <p className="font-semibold">{category}</p>
-                          <div className="pl-5">
-                            {categorizedIngredients(item?.ingredients)[
-                              category
-                            ].map((ingredient, index) => (
-                              <div
-                                key={ingredient.id}
-                                className="flex gap-1 items-center"
-                              >
-                                <div>
-                                  <HorizontalRuleIcon
-                                    sx={{ fontSize: "1rem" }}
-                                  />
-                                </div>
-                                <div
-                                  key={ingredient.id}
-                                  className="flex gap-4 items-center"
-                                >
-                                  <p>{ingredient.name}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </TableCell>
-                  )}
                   <TableCell sx={{ textAlign: "center" }}>
                     ${item.price}
                   </TableCell>

@@ -55,8 +55,8 @@ public class CartServiceImplementation implements CartSerive {
 		newCartItem.setQuantity(req.getQuantity());
 		newCartItem.setCart(cart);
 		newCartItem.setIngredients(req.getIngredients());
-		long effectivePrice = menuItem.get().getDiscountPercent() > 0
-				? (long)(menuItem.get().getPrice() * (100 - menuItem.get().getDiscountPercent()) / 100.0)
+		double effectivePrice = menuItem.get().getDiscountPercent() > 0
+				? menuItem.get().getPrice() * (100 - menuItem.get().getDiscountPercent()) / 100.0
 				: menuItem.get().getPrice();
 		newCartItem.setTotalPrice(req.getQuantity() * effectivePrice);
 		
@@ -76,8 +76,8 @@ public class CartServiceImplementation implements CartSerive {
 		}
 		cartItem.get().setQuantity(quantity);
 		Food food = cartItem.get().getFood();
-		long ep = food.getDiscountPercent() > 0
-				? (long)(food.getPrice() * (100 - food.getDiscountPercent()) / 100.0)
+		double ep = food.getDiscountPercent() > 0
+				? food.getPrice() * (100 - food.getDiscountPercent()) / 100.0
 				: food.getPrice();
 		cartItem.get().setTotalPrice(ep * quantity);
 		return cartItemRepository.save(cartItem.get());
@@ -102,9 +102,9 @@ public class CartServiceImplementation implements CartSerive {
 	}
 
 	@Override
-	public Long calculateCartTotals(Cart cart) throws UserException {
+	public Double calculateCartTotals(Cart cart) throws UserException {
 
-		Long total = 0L;
+		Double total = 0.0;
 		for (CartItem cartItem : cart.getItems()) {
 			total += cartItem.getFood().getPrice() * cartItem.getQuantity();
 		}
