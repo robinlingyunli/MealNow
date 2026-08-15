@@ -20,11 +20,11 @@ const PromotionBanner = ({ item }) => {
   };
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+    <div className="relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group w-full max-w-[27rem]">
       <img
         src={image}
         alt={item.name}
-        className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
+        className="w-full h-[15rem] object-cover group-hover:scale-105 transition-transform duration-300"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex flex-col justify-end p-4">
         <div className="flex items-start justify-between gap-2">

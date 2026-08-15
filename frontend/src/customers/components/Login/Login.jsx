@@ -10,7 +10,7 @@ import {
   createTheme,
   ThemeProvider,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../State/Authentication/Action";
 
@@ -28,6 +28,8 @@ const validationSchema = Yup.object({
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const backgroundLocation = location.state?.backgroundLocation;
   const dispatch = useDispatch();
   const handleSubmit = (values) => {
     // You can handle login submission here, e.g., send data to your server
@@ -84,7 +86,15 @@ const LoginForm = () => {
         </Formik>
         <Typography variant="body2" align="center" sx={{ mt: 3 }}>
           Don't have an account?{" "}
-          <Button onClick={() => navigate("/account/register")}>
+          <Button
+            onClick={() =>
+              navigate("/account/register", {
+                replace: true,
+                state: { backgroundLocation },
+              })
+            }
+            sx={{ p: 0, minWidth: "auto", verticalAlign: "baseline" }}
+          >
             Register
           </Button>
         </Typography>

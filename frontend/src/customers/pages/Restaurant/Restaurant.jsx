@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Backdrop, CircularProgress, Divider, InputAdornment, TextField, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuItemCard from "../../components/MenuItem/MenuItemCard";
 import RatingsSection from "../../components/Review/RatingsSection";
+import Footer from "../../components/Footer/Footer";
+import { PAGE_PADDING_X, PAGE_MAX_WIDTH } from "../../../constants/layout";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurantById, getRestaurantsCategory } from "../../../State/Customers/Restaurant/restaurant.action";
 import { getMenuItemsByRestaurantId } from "../../../State/Customers/Menu/menu.action";
@@ -12,6 +14,7 @@ import TodayIcon from "@mui/icons-material/Today";
 
 const Restaurant = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
   const { restaurant, menu } = useSelector((store) => store);
   const [activeCategory, setActiveCategory] = useState("all");
@@ -71,6 +74,10 @@ const Restaurant = () => {
       )
     : groupedItems;
 
+  const handleFooterCategoryClick = (title) => {
+    navigate("/", { state: { selectedCuisine: title } });
+  };
+
   const sidebarItem = (label, isActive, onClick) => (
     <p
       onClick={onClick}
@@ -86,10 +93,10 @@ const Restaurant = () => {
 
   return (
     <>
-      <div className="px-5 lg:px-20 bg-white min-h-screen">
+      <div className={`${PAGE_PADDING_X} pt-8 bg-white min-h-screen ${PAGE_MAX_WIDTH}`}>
         <section>
           {restaurant.restaurant?.images?.[0] && (
-            <div className="w-full h-56 lg:h-72 overflow-hidden rounded-2xl mt-4">
+            <div className="w-full h-56 lg:h-72 overflow-hidden">
               <img
                 src={restaurant.restaurant.images[0]}
                 alt={restaurant.restaurant.name}
@@ -171,23 +178,25 @@ const Restaurant = () => {
                 )
               )}
 
-              <Divider sx={{ my: 2 }} />
+              <Divider sx={{ mt: 2 }} />
 
-              <Typography
-                variant="subtitle2"
-                onClick={() => setActiveSide("reviews")}
-                sx={{
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  color: activeSide === "reviews" ? "#1A1A1A" : "#6B6B6B",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  "&:hover": { color: "#1A1A1A" },
-                }}
-              >
-                Reviews
-              </Typography>
+              <div className="pt-6 pb-6">
+                <Typography
+                  variant="subtitle2"
+                  onClick={() => setActiveSide("reviews")}
+                  sx={{
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    color: activeSide === "reviews" ? "#1A1A1A" : "#6B6B6B",
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    "&:hover": { color: "#1A1A1A" },
+                  }}
+                >
+                  Reviews
+                </Typography>
+              </div>
             </div>
           </div>
 
@@ -200,7 +209,7 @@ const Restaurant = () => {
                       <Typography variant="h6" sx={{ fontWeight: 700, pb: 2, color: "#1A1A1A" }}>
                         {categoryName}
                       </Typography>
-                      <div>
+                      <div className="grid grid-cols-2 gap-x-10 gap-y-0">
                         {items.map((item) => (
                           <MenuItemCard key={item.id} item={item} />
                         ))}
@@ -212,7 +221,7 @@ const Restaurant = () => {
                     <Typography variant="h6" sx={{ fontWeight: 700, pb: 2, color: "#1A1A1A" }}>
                       {activeCategory}
                     </Typography>
-                    <div>
+                    <div className="grid grid-cols-2 gap-x-10 gap-y-0">
                       {displayedItems.map((item) => (
                         <MenuItemCard key={item.id} item={item} />
                       ))}
@@ -227,6 +236,8 @@ const Restaurant = () => {
           </div>
         </section>
       </div>
+
+      <Footer onCategoryClick={handleFooterCategoryClick} />
 
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

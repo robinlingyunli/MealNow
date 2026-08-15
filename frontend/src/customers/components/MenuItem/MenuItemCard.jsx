@@ -32,7 +32,7 @@ const MenuItemCard = ({ item }) => {
     : null;
 
   return (
-    <div className="flex items-start justify-between py-4 border-b border-gray-100 gap-4">
+    <div className="flex items-start justify-between py-2 border-b border-gray-100 gap-4">
       {/* Text section */}
       <div className="flex-1 min-w-0 space-y-1">
         <p className="font-semibold text-gray-900 text-base">{item.name}</p>
@@ -56,7 +56,7 @@ const MenuItemCard = ({ item }) => {
       <div className="flex flex-col items-center gap-2 shrink-0">
         <div className="relative">
           <img
-            className="w-[5.5rem] h-[5.5rem] object-cover rounded-xl"
+            className="w-[4.5rem] h-[4.5rem] object-cover rounded-xl"
             src={item.images[0]}
             alt={item.name}
           />

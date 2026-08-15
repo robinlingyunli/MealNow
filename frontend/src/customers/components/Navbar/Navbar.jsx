@@ -15,6 +15,7 @@ import Auth from "../../pages/Auth/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../State/Authentication/Action";
 import { pink } from "@mui/material/colors";
+import { PAGE_PADDING_X, PAGE_MAX_WIDTH } from "../../../constants/layout";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -44,7 +45,10 @@ const Navbar = () => {
   };
 
   return (
-    <div className="px-5 z-50 py-[.8rem] bg-white border-b border-gray-200 shadow-sm lg:px-20 flex justify-between items-center">
+    <div className="z-50 bg-white border-b border-gray-200 shadow-sm">
+      <div
+        className={`${PAGE_MAX_WIDTH} ${PAGE_PADDING_X} py-[.8rem] flex justify-between items-center`}
+      >
       <div className="flex items-center space-x-4">
         <div
           onClick={navigateToHome}
@@ -112,6 +116,7 @@ const Navbar = () => {
       </div>
 
       <Auth handleClose={handleCloseAuthModel} />
+    </div>
     </div>
   );
 };

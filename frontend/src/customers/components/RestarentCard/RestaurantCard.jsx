@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import TodayIcon from "@mui/icons-material/Today";
 import { useDispatch, useSelector } from "react-redux";
 import { addToFavorites } from "../../../State/Authentication/Action";
 import { isPresentInFavorites } from "../../../config/logic";
@@ -30,12 +32,12 @@ const RestaurantCard = ({ data, index }) => {
 
   return (
     <div
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow w-[18rem] cursor-pointer"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow w-full max-w-[27rem] cursor-pointer group"
       onClick={navigateToRestaurant}
     >
-      <div className={`relative ${!data.open ? "opacity-70" : ""}`}>
+      <div className={`relative overflow-hidden ${!data.open ? "opacity-70" : ""}`}>
         <img
-          className="w-full h-[10rem] object-cover"
+          className="w-full h-[15rem] object-cover group-hover:scale-105 transition-transform duration-300"
           src={data.images[0]}
           alt={data.name}
         />
@@ -55,6 +57,16 @@ const RestaurantCard = ({ data, index }) => {
           <p className="font-semibold text-gray-900 text-base truncate">{data.name}</p>
           <p className="text-gray-500 text-sm leading-snug line-clamp-2">
             {data.description}
+          </p>
+          <p className="text-gray-500 flex items-center gap-2 text-sm">
+            <LocationOnIcon fontSize="small" />
+            <span className="truncate">{data.address?.streetAddress}</span>
+          </p>
+          <p className="flex items-center gap-2 text-sm text-gray-500">
+            <TodayIcon fontSize="small" />
+            <span className="text-emerald-600 font-medium">
+              {data.openingHours} (Today)
+            </span>
           </p>
         </div>
         <IconButton

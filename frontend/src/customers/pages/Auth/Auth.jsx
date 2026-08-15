@@ -1,9 +1,10 @@
-import { Alert, Box, Button, Modal, Snackbar, Typography } from "@mui/material";
+import { Alert, Box, Button, IconButton, Modal, Snackbar, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
 import RegistrationForm from "../../components/Register/Register";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoginForm from "../../components/Login/Login";
-import ResetPasswordRequest from "./ResetPaswordRequest";
+import ResetPasswordRequest from "./ResetPasswordRequest";
 import { useDispatch, useSelector } from "react-redux";
 import ResetPasswordForm from "./ResetPasswordForm";
 import { resetPassword } from "../../../State/Authentication/Action";
@@ -23,6 +24,7 @@ const style = {
 const Auth = ({ open, handleClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const backgroundLocation = location.state?.backgroundLocation;
   const { auth } = useSelector((store) => store);
   const [openSnackBar,setOpenSnackBar]=useState(false);
 
@@ -46,6 +48,12 @@ const handleCloseSnackBar=()=>{
         onClose={handleClose}
       >
         <Box sx={style}>
+          <IconButton
+            onClick={handleClose}
+            sx={{ position: "absolute", top: 8, right: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
           {location.pathname === "/account/register" ? (
             <RegistrationForm />
           ) : location.pathname === "/account/login" ? (
@@ -55,14 +63,26 @@ const handleCloseSnackBar=()=>{
           )}
           <div className="flex justify-center mt-5">
             {location.pathname === "/account/reset-password-request" || location.pathname === "/account/reset-password"  ? (
-              <Button onClick={() => navigate("/account/login")}>
+              <Button
+                onClick={() =>
+                  navigate("/account/login", {
+                    replace: true,
+                    state: { backgroundLocation },
+                  })
+                }
+              >
                 Go Back To Login
               </Button>
             ) : (
               <Button
-                onClick={() => navigate("/account/reset-password-request")}
+                onClick={() =>
+                  navigate("/account/reset-password-request", {
+                    replace: true,
+                    state: { backgroundLocation },
+                  })
+                }
               >
-                Forgot Pasword
+                Forgot Password
               </Button>
             )}
             <Snackbar

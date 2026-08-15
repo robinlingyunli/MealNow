@@ -81,7 +81,7 @@ const RatingsSection = ({ restaurantId }) => {
               </div>
             </div>
             <Rating value={r.rating} readOnly size="small" />
-            <p className="text-gray-300 text-sm">{r.comment}</p>
+            <p className="text-gray-700 text-sm">{r.comment}</p>
           </div>
         ))}
         {review.reviews.length === 0 && (

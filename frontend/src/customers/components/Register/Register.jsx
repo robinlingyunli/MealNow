@@ -10,7 +10,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../../State/Authentication/Action";
 
@@ -34,6 +34,8 @@ const validationSchema = Yup.object({
 const RegistrationForm = () => {
   const dispatch=useDispatch();
   const navigate=useNavigate();
+  const location=useLocation();
+  const backgroundLocation=location.state?.backgroundLocation;
 
   const handleSubmit = (values) => {
     
@@ -118,7 +120,17 @@ const RegistrationForm = () => {
         </Formik>
         <Typography variant="body2" align="center" sx={{ mt: 3 }}>
           Already have an account ?{" "}
-          <Button onClick={() => navigate("/account/login")}>Login</Button>
+          <Button
+            onClick={() =>
+              navigate("/account/login", {
+                replace: true,
+                state: { backgroundLocation },
+              })
+            }
+            sx={{ p: 0, minWidth: "auto", verticalAlign: "baseline" }}
+          >
+            Login
+          </Button>
         </Typography>
       </div>
     </Container>

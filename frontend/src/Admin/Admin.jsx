@@ -25,8 +25,6 @@ import { fetchRestaurantsOrder } from "../State/Admin/Order/restaurants.order.ac
 
 const Admin = () => {
   const dispatch = useDispatch();
-  const [openSideBar, setOpenSideBar] = useState(false);
-  const handleCloseSideBar = () => setOpenSideBar(false);
   const { auth, restaurant, ingredients } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
   useEffect(() => {
@@ -62,9 +60,7 @@ const Admin = () => {
         <Navbar />
       </div>
       <div className="lg:flex justify-between">
-        <div>
-          <AdminSidebar handleClose={handleCloseSideBar} open={openSideBar} />
-        </div>
+        <AdminSidebar />
         <div className="lg:w-[80vw]">
           <Routes>
             <Route path="/" element={<RestaurantDashboard />} />

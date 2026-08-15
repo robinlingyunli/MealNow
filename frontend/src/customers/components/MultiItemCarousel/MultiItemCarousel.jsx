@@ -12,7 +12,7 @@ const NextArrow = ({ onClick, className }) => {
   return (
     <div
       onClick={onClick}
-      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+      className="absolute -right-10 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
     >
       <ArrowForwardIosIcon sx={{ fontSize: 14, color: "#333" }} />
     </div>
@@ -24,7 +24,7 @@ const PrevArrow = ({ onClick, className }) => {
   return (
     <div
       onClick={onClick}
-      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+      className="absolute -left-10 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
     >
       <ArrowBackIosNewIcon sx={{ fontSize: 14, color: "#333" }} />
     </div>
@@ -52,7 +52,7 @@ const MultipleItemsCarousel = ({ onCuisineClick }) => {
     responsive,
   };
   return (
-    <div className="relative px-8">
+    <div className="relative px-12">
       <Slider {...settings}>
         {topMeels.map((item) => (
           <CarouselItem image={item.image} title={item.title} onClick={onCuisineClick} />
