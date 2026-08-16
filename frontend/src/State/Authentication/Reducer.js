@@ -11,10 +11,6 @@ import {
   GET_USER_FAILURE,
   LOGOUT,
   ADD_TO_FAVORITES_SUCCESS,
-  RESET_PASSWORD_REQUEST,
-  REQUEST_RESET_PASSWORD_REQUEST,
-  REQUEST_RESET_PASSWORD_SUCCESS,
-  REQUEST_RESET_PASSWORD_FAILURE,
 } from "./ActionType";
 
 const initialState = {
@@ -31,8 +27,6 @@ const authReducer = (state = initialState, action) => {
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
     case GET_USER_REQUEST:
-    case RESET_PASSWORD_REQUEST:
-    case REQUEST_RESET_PASSWORD_REQUEST:
       return { ...state, isLoading: true, error: null, success: null };
 
     case REGISTER_SUCCESS:
@@ -69,18 +63,10 @@ const authReducer = (state = initialState, action) => {
         user: action.payload,
         favorites: action.payload.favorites,
       };
-      
-    case REQUEST_RESET_PASSWORD_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        success: action.payload?.message,
-      };
 
     case REGISTER_FAILURE:
     case LOGIN_FAILURE:
     case GET_USER_FAILURE:
-    case REQUEST_RESET_PASSWORD_FAILURE:
       return { ...state, isLoading: false, error: action.payload };
 
     case LOGOUT:

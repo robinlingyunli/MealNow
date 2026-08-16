@@ -3,6 +3,7 @@ package com.example.config;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,9 @@ import jakarta.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 public class AppConfig {
 
+    @Value("${jwt.secret.key}")
+    private String jwtSecretKey;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -29,14 +33,14 @@ public class AppConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/restaurants", "/api/restaurants/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/food/restaurant/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/food/restaurant/**", "/api/food/search", "/api/food/cuisine").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/category/restaurant/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/promotions").permitAll()
                 .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )
-            .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+            .addFilterBefore(new JwtTokenValidator(jwtSecretKey), BasicAuthenticationFilter.class)
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 

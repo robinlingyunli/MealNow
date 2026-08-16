@@ -81,6 +81,22 @@ export const searchMenuItem = ({keyword,jwt}) => {
   };
 };
 
+export const searchMenuItemByCuisine = ({cuisineType,jwt}) => {
+  return async (dispatch) => {
+    dispatch({ type: SEARCH_MENU_ITEM_REQUEST });
+    try {
+      const { data } = await api.get(`api/food/cuisine?type=${cuisineType}`,{
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      dispatch({ type: SEARCH_MENU_ITEM_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({ type: SEARCH_MENU_ITEM_FAILURE });
+    }
+  };
+};
+
 export const getAllIngredientsOfMenuItem = (reqData) => {
   return async (dispatch) => {
     dispatch(getMenuItemsByRestaurantIdRequest());

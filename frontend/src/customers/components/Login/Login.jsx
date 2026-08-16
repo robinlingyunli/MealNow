@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
+  Alert,
   Button,
   TextField,
   Typography,
@@ -49,40 +50,47 @@ const LoginForm = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              label="Email Address"
-              name="email"
-              id="email"
-              autoComplete="email"
-              helperText={<ErrorMessage name="email" />}
-            />
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              label="Password"
-              name="password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              helperText={<ErrorMessage name="password" />}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              sx={{ mt: 2,padding:"1rem" }}
-            >
-              Login
-            </Button>
-          </Form>
+          {({ errors, submitCount }) => (
+            <Form>
+              {submitCount > 0 && (errors.email || errors.password) && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {errors.email || errors.password}
+                </Alert>
+              )}
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                label="Email Address"
+                name="email"
+                id="email"
+                autoComplete="email"
+                helperText={<ErrorMessage name="email" />}
+              />
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                helperText={<ErrorMessage name="password" />}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2,padding:"1rem" }}
+              >
+                Login
+              </Button>
+            </Form>
+          )}
         </Formik>
         <Typography variant="body2" align="center" sx={{ mt: 3 }}>
           Don't have an account?{" "}

@@ -18,11 +18,17 @@ public interface foodRepository extends JpaRepository<Food, Long> {
 	long countByFoodCategoryId(Long categoryId);
 	
 	@Query("SELECT f FROM Food f WHERE "
-			+ "f.name LIKE %:keyword% OR "
-			+ "f.foodCategory.name LIKE %:keyword% AND "
-			+ "f.restaurant!=null"
+			+ "(f.name LIKE %:keyword% OR "
+			+ "f.restaurant.name LIKE %:keyword%) AND "
+			+ "f.restaurant IS NOT NULL"
 	)
 	List<Food> searchByNameOrCategory(@Param("keyword") String keyword);
+
+	@Query("SELECT f FROM Food f WHERE "
+			+ "LOWER(f.restaurant.cuisineType) = LOWER(:cuisineType) AND "
+			+ "f.restaurant IS NOT NULL"
+	)
+	List<Food> findByCuisineType(@Param("cuisineType") String cuisineType);
 
 
 	

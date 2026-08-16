@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
@@ -72,9 +73,22 @@ public class OrderController {
         orderService.cancelOrder(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
 
-    
+    @GetMapping("/admin/order/restaurant/{restaurantId}")
+    public ResponseEntity<List<Order>> getRestaurantOrders(@PathVariable Long restaurantId,
+            @RequestParam(value = "order_status", required = false) String orderStatus,
+            @RequestHeader("Authorization") String jwt) throws OrderException, UserException, RestaurantException {
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Order> orders = orderService.getOrdersOfRestaurant(restaurantId, orderStatus);
+        return ResponseEntity.ok(orders);
+    }
 
-	
+    @PutMapping("/admin/orders/{orderId}/{orderStatus}")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long orderId, @PathVariable String orderStatus,
+            @RequestHeader("Authorization") String jwt) throws OrderException, UserException {
+        User user = userService.findUserProfileByJwt(jwt);
+        Order order = orderService.updateOrder(orderId, orderStatus);
+        return ResponseEntity.ok(order);
+    }
+
 }

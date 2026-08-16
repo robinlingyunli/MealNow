@@ -25,6 +25,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtTokenValidator extends OncePerRequestFilter {
 
+	private final String secretKey;
+
+	public JwtTokenValidator(String secretKey) {
+		this.secretKey = secretKey;
+	}
+
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		// 跳过 /auth/** 路径的 JWT 验证
@@ -43,7 +49,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 			
 			try {
 				
-				SecretKey key= Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
+				SecretKey key= Keys.hmacShaKeyFor(secretKey.getBytes());
 				
 				Claims claims=Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
 				

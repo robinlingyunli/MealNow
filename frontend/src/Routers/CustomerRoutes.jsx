@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import HomePage from '../customers/pages/Home/HomePage'
 import Navbar from '../customers/components/Navbar/Navbar'
@@ -8,19 +8,23 @@ import PaymentSuccess from '../customers/pages/PaymentSuccess/PaymentSuccess'
 import Search from '../customers/components/Search/Search'
 import CreateRestaurantForm from '../Admin/AddRestaurants/CreateRestaurantForm'
 import Restaurant from '../customers/pages/Restaurant/Restaurant'
-import PasswordChangeSuccess from '../customers/pages/Auth/PasswordChangeSuccess'
 import NotFound from '../customers/pages/NotFound/NotFound'
 
 const CustomerRoutes = () => {
   const location = useLocation();
   const backgroundLocation = location.state?.backgroundLocation;
+  const routedLocation = backgroundLocation || location;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [routedLocation.pathname]);
 
   return (
     <div className='relative'>
       <nav className="sticky top-0 z-50">
         <Navbar />
       </nav>
-      <Routes location={backgroundLocation || location}>
+      <Routes location={routedLocation}>
         <Route exact path='/' element={<HomePage />} />
         <Route exact path='/account/:register' element={<HomePage />} />
         <Route exact path='/restaurant/:city/:title/:id' element={<Restaurant />} />
@@ -29,7 +33,6 @@ const CustomerRoutes = () => {
         <Route path='/my-profile/*' element={<Profile />} />
         <Route path='/search' element={<Search />} />
         <Route path='/admin/add-restaurant' element={<CreateRestaurantForm />} />
-        <Route exact path='/password_change_success' element={<PasswordChangeSuccess />} />
         <Route exact path='/*' element={<NotFound />} />
       </Routes>
     </div>

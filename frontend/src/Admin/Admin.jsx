@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import AdminDashboard from "./Dashboard/AdminDashboard";
 import AdminSidebar from "./AdminSidebar";
 import RestaurantDashboard from "./Dashboard/RestaurantDashboard";
@@ -27,9 +27,15 @@ const Admin = () => {
   const dispatch = useDispatch();
   const { auth, restaurant, ingredients } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
+  const location = useLocation();
+
   useEffect(() => {
     dispatch(getRestaurantByUserId(jwt));
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (restaurant.usersRestaurant) {

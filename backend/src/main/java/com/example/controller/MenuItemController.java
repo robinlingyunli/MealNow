@@ -40,6 +40,12 @@ public class MenuItemController {
 		List<Food> menuItem = menuItemService.searchFood(name);
 		return ResponseEntity.ok(menuItem);
 	}
+	@GetMapping("/cuisine")
+	public ResponseEntity<List<Food>> getFoodByCuisineType(
+			@RequestParam String type)  {
+		List<Food> menuItem = menuItemService.getFoodByCuisineType(type);
+		return ResponseEntity.ok(menuItem);
+	}
 	@GetMapping("/restaurant/{restaurantId}")
 	public ResponseEntity<List<Food>> getMenuItemByRestaurantId(
 			@PathVariable Long restaurantId,

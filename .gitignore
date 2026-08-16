@@ -33,6 +33,9 @@ build/
 .vscode/
 backup.sql
 
+### Backend secrets ###
+backend/.env
+
 ### Frontend ###
 frontend/.env
 frontend/.env.local

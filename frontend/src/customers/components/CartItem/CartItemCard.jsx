@@ -68,7 +68,7 @@ const CartItemCard = ({ item }) => {
         </div>
       </div>
       <div className="pt-3 space-x-2">
-        {item.ingredients.map((item)=><Chip label={item}/> )}
+        {item.ingredients?.map((item)=><Chip key={item} label={item}/> )}
       </div>
       
   </div>

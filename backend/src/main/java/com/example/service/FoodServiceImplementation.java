@@ -144,6 +144,11 @@ public class FoodServiceImplementation implements FoodService {
 	}
 
 	@Override
+	public List<Food> getFoodByCuisineType(String cuisineType) {
+		return foodRepository.findByCuisineType(cuisineType);
+	}
+
+	@Override
 	public Food updateAvailibilityStatus(Long id) throws FoodException {
 		Food food = findFoodById(id);
 		
